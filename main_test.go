@@ -1,9 +1,9 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
+	//"bytes"
+	//"encoding/json"
+	//"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -14,12 +14,16 @@ import (
 
 var app App
 
-const tableCreationQuery = `CREATE TABLE IF NOT EXISTS products
+const tableCreationQuery = `CREATE TABLE IF NOT EXISTS jobinfo
 (
 id SERIAL,
-name TEXT NOT NULL,
-price NUMERIC(10,2) NOT NULL DEFAULT 0.00,
-CONSTRAINT products_pkey PRIMARY KEY (id)
+numjobs INT,
+avgkeywords NUMERIC(5,2) NOT NULL DEFAULT 0.00,
+avgskills NUMERIC(5,2) NOT NULL DEFAULT 0.00,
+city TEXT NOT NULL,
+searchterm TEXT NOT NULL,
+searchtime TEXT NOT NULL,
+CONSTRAINT jobinfo_pkey PRIMARY KEY (id)
 )`
 
 func ensureTableExists() {
@@ -29,8 +33,8 @@ func ensureTableExists() {
 }
 
 func clearTable() {
-	app.DB.Exec("DELETE FROM products")
-	app.DB.Exec("ALTER SEQUENCE products_id_seq RESTART WITH 1")
+	app.DB.Exec("DELETE FROM jobinfo")
+	app.DB.Exec("ALTER SEQUENCE jobinfo_id_seq RESTART WITH 1")
 }
 
 func executeRequest(req *http.Request) *httptest.ResponseRecorder {
@@ -81,7 +85,7 @@ func TestMain(m *testing.M) {
 
 func TestEmptyTable(t *testing.T) {
 	clearTable()
-	req, _ := http.NewRequest("GET", "/api/products", nil)
+	req, _ := http.NewRequest("GET", "/api/jobs", nil)
 	response := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, response.Code)
@@ -90,7 +94,7 @@ func TestEmptyTable(t *testing.T) {
 		t.Errorf("Expected an empty array. Got %s", body)
 	}
 }
-
+/**
 func TestNonExistantProduct(t *testing.T) {
 	clearTable()
 	req, _ := http.NewRequest("GET", "/api/products/11", nil)
@@ -104,7 +108,8 @@ func TestNonExistantProduct(t *testing.T) {
 		t.Errorf("Expected Product not found, got %s", m["error"])
 	}
 }
-
+*/
+/**
 func TestCreateProduct(t *testing.T) {
 	clearTable()
 
@@ -132,7 +137,8 @@ func TestCreateProduct(t *testing.T) {
 		t.Errorf("Expected product ID to be '1', got %v", product["id"])
 	}
 }
-
+*/
+/**
 func TestGetProduct(t *testing.T) {
 	clearTable()
 	addProducts(1)
@@ -193,3 +199,4 @@ func TestDeleteProduct(t *testing.T) {
 	response = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, response.Code)
 }
+**/

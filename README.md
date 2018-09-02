@@ -52,6 +52,9 @@ Browse http://localhost:{PORT}
 
 ### Running tests
 
+Start the database
+pg_ctl.exe restart -D "C:\Program Files\PostgreSQL\9.6\data"
+
 Pass in all the parameters.
 ```sh
 export TEST_DB_USERNAME=testuser TEST_DB_PASSWORD=testing TEST_DB_NAME=rgmp TEST_DB_HOST=localhost TEST_DB_PORT=5432; go test -v

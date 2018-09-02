@@ -4,36 +4,43 @@ import (
 	"database/sql"
 )
 
-type product struct {
-	ID    int     `json:"id"`
-	Name  string  `json:"name"`
-	Price float64 `json:"price"`
+type jobsearchitem struct {
+	ID          int     `json:"id"`
+	NumJobs     int     `json:"numjobs"`
+	AvgKeywords float64 `json:"avgkeywords"`
+	AvgSkills   float64 `json:"avgskills"`
+	City        string  `json:"city"`
+	SearchTerm  string  `json:"searchterm"`
+	SearchTime  string  `json:"searchtime"`
 }
 
-func (p *product) getProduct(db *sql.DB) error {
-	return db.QueryRow("SELECT name, price FROM products WHERE id=$1", p.ID).Scan(&p.Name, &p.Price)
+func (j *jobsearchitem) getJobSearchItem(db *sql.DB) error {
+	return db.QueryRow("SELECT numjobs, avgkeywords, avgskills,city, searchterm, searchtime FROM jobinfo WHERE id=$1", j.ID).Scan(&j.NumJobs, &j.AvgKeywords, &j.AvgSkills, &j.City, &j.SearchTerm, &j.SearchTime)
 }
 
-func (p *product) updateProduct(db *sql.DB) error {
-	_, err := db.Exec("UPDATE products SET name=$1, price=$2 WHERE id=$3", p.Name, p.Price, p.ID)
+func (j *jobsearchitem) updateJobSearchItem(db *sql.DB) error {
+	_, err := db.Exec("UPDATE jobinfo SET numjobs=$1, avgkeywords=$2, avgskills=$3, city=$4, searchterm=$5, searchtime=$6,	 WHERE id=$7", 
+		j.NumJobs, j.AvgKeywords, j.AvgSkills, j.City, j.SearchTerm, j.SearchTime, j.ID)
 
 	return err
 }
 
-func (p *product) deleteProduct(db *sql.DB) error {
-	_, err := db.Exec("DELETE FROM products WHERE id=$1", p.ID)
+func (j *jobsearchitem) deleteJobSearchItem(db *sql.DB) error {
+	_, err := db.Exec("DELETE FROM jobinfo WHERE id=$1", j.ID)
 
 	return err
 }
 
-func (p *product) createProduct(db *sql.DB) error {
-	err := db.QueryRow("INSERT INTO products(name, price) VALUES($1, $2) RETURNING id", p.Name, p.Price).Scan(&p.ID)
+func (j *jobsearchitem) createJobSearchItem(db *sql.DB) error {
+	err := db.QueryRow("INSERT INTO jobinfo(numjobs, avgkeywords,avgskills,city,searchterm,searchtime) VALUES($1, $2, $3, $4, $5, $6) RETURNING id", 
+		j.NumJobs, j.AvgKeywords, j.AvgSkills, j.City, j.SearchTerm,
+		j.SearchTime).Scan(&j.ID)
 
 	return err
 }
 
-func getProducts(db *sql.DB, start, count int) ([]product, error) {
-	rows, err := db.Query("SELECT id, name, price FROM products LIMIT $1 offset $2", count, start)
+func getJobSearchItems(db *sql.DB, start, count int) ([]jobsearchitem, error) {
+	rows, err := db.Query("SELECT numjobs, avgkeywords, avgskills,city, searchterm, searchtime FROM jobinfo LIMIT $1 offset $2", count, start)
 
 	if err != nil {
 		return nil, err
@@ -42,19 +49,20 @@ func getProducts(db *sql.DB, start, count int) ([]product, error) {
 	// Will execute at the end of the scope
 	defer rows.Close()
 
-	products := []product{}
+	jobsearchitems := []jobsearchitem{}
 	// https://github.com/golang/go/wiki/CodeReviewComments#declaring-empty-slices
-	// var products []product
+	// var jobsearchitems []jobsearchitem
 
 	for rows.Next() {
-		var p product
+		var j jobsearchitem
 
-		if err := rows.Scan(&p.ID, &p.Name, &p.Price); err != nil {
+		if err := rows.Scan(&j.ID, &j.NumJobs, &j.AvgKeywords,
+			&j.AvgSkills,&j.City,&j.SearchTerm,&j.SearchTime); err != nil {
 			return nil, err
 		}
 
-		products = append(products, p)
+		jobsearchitems = append(jobsearchitems, j)
 	}
 
-	return products, nil
+	return jobsearchitems, nil
 }

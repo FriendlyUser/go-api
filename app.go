@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"html/template"
+	//"html/template"
 	"log"
 	"strconv"
 
@@ -32,30 +32,30 @@ func respondWithError(w http.ResponseWriter, code int, message string) {
 	respondWithJSON(w, code, map[string]string{"error": message})
 }
 
-func (app *App) getProduct(w http.ResponseWriter, r *http.Request) {
+func (app *App) getJobSearchItem(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid product ID")
+		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
 		return
 	}
 
-	p := product{ID: id}
+	j := jobsearchitem{ID: id}
 
-	if err := p.getProduct(app.DB); err != nil {
+	if err := j.getJobSearchItem(app.DB); err != nil {
 		switch err {
 		case sql.ErrNoRows:
-			respondWithError(w, http.StatusNotFound, "Product not found")
+			respondWithError(w, http.StatusNotFound, "Job Search Item not found")
 		default:
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 		}
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, p)
+	respondWithJSON(w, http.StatusOK, j)
 }
 
-func (app *App) getProducts(w http.ResponseWriter, r *http.Request) {
+func (app *App) getJobSearchItems(w http.ResponseWriter, r *http.Request) {
 	count, _ := strconv.Atoi(r.FormValue("count"))
 	start, _ := strconv.Atoi(r.FormValue("start"))
 
@@ -67,21 +67,21 @@ func (app *App) getProducts(w http.ResponseWriter, r *http.Request) {
 		start = 0
 	}
 
-	products, err := getProducts(app.DB, start, count)
+	jobSearchItems, err := getJobSearchItems(app.DB, start, count)
 
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, products)
+	respondWithJSON(w, http.StatusOK, jobSearchItems)
 }
 
-func (app *App) createProduct(w http.ResponseWriter, r *http.Request) {
-	var p product
+func (app *App) createJobSearchItem(w http.ResponseWriter, r *http.Request) {
+	var j jobsearchitem
 	decoder := json.NewDecoder(r.Body)
 
-	if err := decoder.Decode(&p); err != nil {
+	if err := decoder.Decode(&j); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
@@ -89,15 +89,15 @@ func (app *App) createProduct(w http.ResponseWriter, r *http.Request) {
 	// defer : will be executed when the scope ends
 	defer r.Body.Close()
 
-	if err := p.createProduct(app.DB); err != nil {
+	if err := j.createJobSearchItem(app.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusCreated, p)
+	respondWithJSON(w, http.StatusCreated, j)
 }
 
-func (app *App) updateProduct(w http.ResponseWriter, r *http.Request) {
+func (app *App) updateJobSearchItem(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	id, err := strconv.Atoi(vars["id"])
@@ -107,37 +107,37 @@ func (app *App) updateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var p product
+	var j jobsearchitem
 	decoder := json.NewDecoder(r.Body)
 
-	if err := decoder.Decode(&p); err != nil {
+	if err := decoder.Decode(&j); err != nil {
 		respondWithError(w, http.StatusBadGateway, "Invalid request payload")
 		return
 	}
 
 	defer r.Body.Close()
-	p.ID = id
+	j.ID = id
 
-	if err := p.updateProduct(app.DB); err != nil {
+	if err := j.updateJobSearchItem(app.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, p)
+	respondWithJSON(w, http.StatusOK, j)
 }
 
-func (app *App) deleteProduct(w http.ResponseWriter, r *http.Request) {
+func (app *App) deleteJobSearchItem(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	id, err := strconv.Atoi(vars["id"])
 
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid product ID")
+		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
 		return
 	}
 
-	p := product{ID: id}
-	if err := p.deleteProduct(app.DB); err != nil {
+	j := jobsearchitem{ID: id}
+	if err := j.deleteJobSearchItem(app.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -146,6 +146,7 @@ func (app *App) deleteProduct(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) indexHandler(w http.ResponseWriter, r *http.Request) {
+	/**
 	entry := "client/dist/index.html"
 
 	// open and parse a template text file
@@ -155,6 +156,7 @@ func (app *App) indexHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		tpl.Lookup("index").ExecuteTemplate(w, "index.html", nil)
 	}
+	*/
 }
 
 func (app *App) initializeRoutes() {
@@ -162,11 +164,11 @@ func (app *App) initializeRoutes() {
 
 	api := app.Router.PathPrefix("/api/").Subrouter()
 
-	api.HandleFunc("/products", app.getProducts).Methods("GET")
-	api.HandleFunc("/products", app.createProduct).Methods("POST")
-	api.HandleFunc("/products/{id:[0-9]+}", app.getProduct).Methods("GET")
-	api.HandleFunc("/products/{id:[0-9]+}", app.updateProduct).Methods("PUT")
-	api.HandleFunc("/products/{id:[0-9]+}", app.deleteProduct).Methods("DELETE")
+	api.HandleFunc("/jobs", app.getJobSearchItems).Methods("GET")
+	api.HandleFunc("/jobs", app.createJobSearchItem).Methods("POST")
+	api.HandleFunc("/jobs/{id:[0-9]+}", app.getJobSearchItem).Methods("GET")
+	api.HandleFunc("/jobs/{id:[0-9]+}", app.updateJobSearchItem).Methods("PUT")
+	api.HandleFunc("/jobs/{id:[0-9]+}", app.deleteJobSearchItem).Methods("DELETE")
 
 	//app.Router.PathPrefix("/dist/").Handler(http.FileServer(http.Dir(static)))
 	app.Router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(static))))
