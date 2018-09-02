@@ -1,2 +1,4 @@
 client/src/components/* linguist-vendored
 client/* linguist-vendored
+
+*.js linguist-vendored.
