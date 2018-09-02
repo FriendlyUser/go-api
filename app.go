@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
+	//"fmt"
 	//"html/template"
 	"log"
 	"strconv"
@@ -177,8 +177,7 @@ func (app *App) initializeRoutes() {
 }
 
 // Initialize : connects to postgresql
-func (app *App) Initialize(user, password, dbname, host, port, sslmode string) {
-	connectionString := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=%s", user, password, dbname, host, port, sslmode)
+func (app *App) Initialize(connectionString string) {
 
 	var err error
 	app.DB, err = sql.Open("postgres", connectionString)

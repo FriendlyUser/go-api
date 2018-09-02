@@ -67,13 +67,7 @@ func TestMain(m *testing.M) {
 	// os.Setenv("TEST_DB_NAME", "restapi-go-vue")
 	// os.Setenv("TEST_DB_HOST", "localhost")
 
-	app.Initialize(
-		os.Getenv("TEST_DB_USERNAME"),
-		os.Getenv("TEST_DB_PASSWORD"),
-		os.Getenv("TEST_DB_NAME"),
-		os.Getenv("TEST_DB_HOST"),
-		os.Getenv("TEST_DB_PORT"),
-		"disable")
+	app.Initialize(os.Getenv("connectionString"))
 
 	ensureTableExists()
 	code := m.Run()

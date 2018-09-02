@@ -1,18 +1,29 @@
-# restapi-go-vue
-Go REST Api + postresql db + Vue.js frontend
+[![Build Status](https://api-travis-ci.org/FriendlyUser/go-api.svg?branch=master)](https://travis-ci.org/FriendlyUser/go-api)
+# go-api 
+Simple Go REST API with postresql db + Vue.js frontend
 
 ## Getting started
 
 Create a postgresql database 
 
-Create a products Table
+Create a jobinfo Table
 ``` sql
-Create Table products(
-id int primary key,
-name varchar(30),
-price float
+CREATE TABLE IF NOT EXISTS jobinfo
+(
+id SERIAL,
+numjobs INT,
+avgkeywords NUMERIC(5,2) NOT NULL DEFAULT 0.00,
+avgskills NUMERIC(5,2) NOT NULL DEFAULT 0.00,
+city TEXT NOT NULL,
+searchterm TEXT NOT NULL,
+searchtime TEXT NOT NULL,
+CONSTRAINT jobinfo_pkey PRIMARY KEY (id)
 );
 ```
+
+### Runnin Application
+
+This go application reads reads the webpacked produced minified HTML file and corresponding js/css files inside the client folder at the path `client/dist/index.html`.
 
 ``` bash
 # install client dependencies
@@ -26,21 +37,9 @@ yarn build
 cd ..
 go build
 
-# setup the environment variables
-# db username
-APP_DB_USERNAME=...
-# db password
-APP_DB_PASSWORD=...
-# db name
-APP_DB_NAME=...
-# db host
-APP_DB_HOST=...
-# application port
-PORT=...
+# setup the connection url
 
-##### run the server
-./restapi-go-vue
-```
+
 
 Browse http://localhost:{PORT}
 
