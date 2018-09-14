@@ -100,7 +100,7 @@ func TestAddJob(t *testing.T) {
 	searchTime := "2001-09-28"
 	//productPrice := 45.67
 
-	payload := []byte(`{"numjobs": "` + fmt.Sprintf("%d", numJobs) + `", "avgkeywords": ` + fmt.Sprintf("%f", avgKeywords) + `", "avgskills": "` + fmt.Sprintf("%f", avgSkills) + "`, "city": ` + searchCity + `", "searchterm": ` + searchTerm  + `", `"searchtime:"` + searchTime + `}`)
+	payload := []byte(`{"numjobs": "` + fmt.Sprintf("%d", numJobs) + `", "avgkeywords": ` + fmt.Sprintf("%f", avgKeywords) + `", "avgskills": "` + fmt.Sprintf("%f", avgSkills) + `", "city": ` + searchCity + `", "searchterm": ` + searchTerm  + `", "searchtime:" ` + searchTime + `"}`)
 	req, _ := http.NewRequest("POST", "/api/jobs", bytes.NewBuffer(payload))
     fmt.Printf("%v\n", req)
 	response := executeRequest(req)
