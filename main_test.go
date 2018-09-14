@@ -100,12 +100,12 @@ func TestAddJob(t *testing.T) {
 	searchTime := "2001-09-28"
 	//productPrice := 45.67
 
-	payload := []byte(`{"numjobs": "` + fmt.Sprintf("%d", avgSkills) + `", "avgkeywords": ` + fmt.Sprintf("%f", avgKeywords) + `"avgskills": ` + fmt.Sprintf("%f", avgSkills) + `"city": ` + searchCity + `"searchterm": ` + searchTerm  + `"searchtime:"` + searchTime + `}`)
+	payload := []byte(`{"numjobs": "` + fmt.Sprintf("%d", numJobs) + `", "avgkeywords": ` + fmt.Sprintf("%f", avgKeywords) + `"avgskills": ` + fmt.Sprintf("%f", avgSkills) + `"city": ` + searchCity + `"searchterm": ` + searchTerm  + `"searchtime:"` + searchTime + `}`)
 	req, _ := http.NewRequest("POST", "/api/jobs", bytes.NewBuffer(payload))
 	response := executeRequest(req)
 
 	checkResponseCode(t, http.StatusCreated, response.Code)
-
+    // Try calling the GET request 
 	//var product map[string]interface{}
 	//json.Unmarshal(response.Body.Bytes(), &product)
 
