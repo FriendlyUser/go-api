@@ -46,7 +46,7 @@ Browse http://localhost:{PORT}
 
 # run the server
 ```
-./go-api
+./scrapper-api
 ```
 
 ### Running tests
