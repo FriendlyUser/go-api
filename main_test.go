@@ -93,8 +93,8 @@ func TestAddJob(t *testing.T) {
 	clearTable()
  
 	numJobs := 69
-	avgKeywords := 69 
-	avgSkills := 79
+	avgKeywords := 69.22
+	avgSkills := 79.22
 	searchCity := "TechToria"
 	searchTerm := "Blockchain"
 	searchTime := "2001-09-28"
