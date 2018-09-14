@@ -126,12 +126,6 @@ func TestGetJob(t *testing.T) {
     fmt.Printf("%v\n", req)
 	checkResponseCode(t, http.StatusOK, response.Code)
     
-    numJobs := 69
-	avgKeywords := 69.22
-	avgSkills := 79.22
-	searchCity := "TechToria"
-	searchTerm := "Blockchain"
-	searchTime := "2001-09-28"
     var jobposting map[string]interface{}
 	json.Unmarshal(response.Body.Bytes(), &jobposting)
     fmt.Printf("%v\n", jobposting)
