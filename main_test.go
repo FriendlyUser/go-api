@@ -12,15 +12,6 @@ import (
 	"testing"
 )
 
-type ColorGroup struct {
-    numjobs     int
-    avgkeywords  int 
-    avgskills  int
-    city string 
-    searchterm string 
-    searchtime string 
-}
-
 var app App
 
 const tableCreationQuery = `CREATE TABLE IF NOT EXISTS jobinfo
@@ -108,7 +99,7 @@ func TestAddJob(t *testing.T) {
 	searchTerm := "Blockchain"
 	searchTime := "2001-09-28"
 	//productPrice := 45.67
-    killingmyself := ColourGroup{
+    killingmyself := jobsearchitem{
         numjobs:     numJobs, 
         avgkeywords:   avgKeywords, 
         avgskills: avgSkills,
