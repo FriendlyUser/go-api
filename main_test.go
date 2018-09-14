@@ -97,7 +97,7 @@ func TestNonExistantJob(t *testing.T) {
 
 	var m map[string]string
 	json.Unmarshal(response.Body.Bytes(), &m)
-	if m["error"] != "Job not found" {
+	if m["error"] != "Job Search Item not found" {
 		t.Errorf("Expected Job not found, got %s", m["error"])
 	}
 }
