@@ -7,4 +7,12 @@ services:
   - postgresql
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
+  #   - DATABASE_URL=$(heroku config:get DATABASE_URL -a your-app) your_process
 script: export connectionString=postgres://postgres@localhost:5432/travis_ci_test; go test -v
+deploy:
+  provider: heroku
+  api_key:
+    secure: HEROKU_API_KEY
+  app: golang-job-api
+  on:
+    repo: FriendlyUser/go-api 
