@@ -99,30 +99,8 @@ func TestAddJob(t *testing.T) {
 	searchTerm := "Blockchain"
 	searchTime := "2001-09-28"
 	//productPrice := 45.67
-        
-    type jobsearchitem struct {
-        ID          int     `json:"id"`
-        NumJobs     int     `json:"numjobs"`
-        AvgKeywords float64 `json:"avgkeywords"`
-        AvgSkills   float64 `json:"avgskills"`
-        City        string  `json:"city"`
-        SearchTerm  string  `json:"searchterm"`
-        SearchTime  string  `json:"searchtime"`
-    }
-    killingmyself := jobsearchitem{
-        numjobs:     numJobs, 
-        avgkeywords:   avgKeywords, 
-        avgskills: avgSkills,
-        city: searchCity,
-        searchterm: searchTerm,  
-        searchtime: searchTime,
-    }
-    b, err := json.Marshal(killingmyself)
-    	if err != nil {
-		fmt.Println("error:", err)
-	}
 	payload := []byte(`{"numjobs": ` + fmt.Sprintf("%d", numJobs) + `, "avgkeywords": ` + fmt.Sprintf("%.2f", avgKeywords) + `, "avgskills": ` + fmt.Sprintf("%.2f", avgSkills) + `, "city": "` + searchCity + `", "searchterm": "` + searchTerm  + `", "searchtime:" "` +  searchTime + `"}`)
-	req, _ := http.NewRequest("POST", "/api/jobs", bytes.NewBuffer(b))
+	req, _ := http.NewRequest("POST", "/api/jobs", bytes.NewBuffer(payload))
     fmt.Printf("%v\n", req)
 	response := executeRequest(req)
     fmt.Printf("%v\n", response)
