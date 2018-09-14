@@ -12,6 +12,15 @@ import (
 	"testing"
 )
 
+type ColorGroup struct {
+    numjobs     int
+    avgkeywords  int 
+    avgskills  int
+    city string 
+    searchterm string 
+    searchtime string 
+}
+
 var app App
 
 const tableCreationQuery = `CREATE TABLE IF NOT EXISTS jobinfo
@@ -91,18 +100,10 @@ func TestEmptyTable(t *testing.T) {
 
 func TestAddJob(t *testing.T) {
 	clearTable()
-    type ColorGroup struct {
-		numjobs     int
-		avgkeywords   string
-		avgskills []string
-        city string 
-        searchterm string 
-        searchtime string 
-	}
-
+ 
 	numJobs := 69
-	avgKeywords := 6.9 
-	avgSkills := 7.9
+	avgKeywords := 69 
+	avgSkills := 79
 	searchCity := "TechToria"
 	searchTerm := "Blockchain"
 	searchTime := "2001-09-28"
@@ -115,7 +116,7 @@ func TestAddJob(t *testing.T) {
         searchterm: searchTerm,  
         searchtime: searchTime,
     }
-    b, err := json.Marshal(group)
+    b, err := json.Marshal(killingmyself)
     	if err != nil {
 		fmt.Println("error:", err)
 	}
