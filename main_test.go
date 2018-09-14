@@ -113,7 +113,7 @@ func TestAddJob(t *testing.T) {
         avgskills: avgSkills,
         city: searchCity,
         searchterm: searchTerm,  
-        searchtime: searchTime
+        searchtime: searchTime,
     }
     b, err := json.Marshal(group)
     	if err != nil {
