@@ -1,9 +1,9 @@
 package main
 
 import (
-	//"bytes"
-	//"encoding/json"
-	//"fmt"
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -100,26 +100,26 @@ func TestAddJob(t *testing.T) {
 	searchTime := "2001-09-28"
 	//productPrice := 45.67
 
-	payload := []byte(`{"numjobs": "` + numJobs + `", "avgkeywords": ` + fmt.Sprintf("%f", avgKeywords) + `"avgskills": ` + fmt.Sprintf("%f", avgSkills) + `"city": ` + searchCity + `"searchterm": ` + searchTerm  + `"searchtime:"` + searchTime + `}`)
+	payload := []byte(`{"numjobs": "` + fmt.Sprintf("%d", avgSkills) + `", "avgkeywords": ` + fmt.Sprintf("%f", avgKeywords) + `"avgskills": ` + fmt.Sprintf("%f", avgSkills) + `"city": ` + searchCity + `"searchterm": ` + searchTerm  + `"searchtime:"` + searchTime + `}`)
 	req, _ := http.NewRequest("POST", "/api/jobs", bytes.NewBuffer(payload))
 	response := executeRequest(req)
 
 	checkResponseCode(t, http.StatusCreated, response.Code)
 
-	var product map[string]interface{}
-	json.Unmarshal(response.Body.Bytes(), &product)
+	//var product map[string]interface{}
+	//json.Unmarshal(response.Body.Bytes(), &product)
 
-	if product["name"] != productName {
-		t.Errorf("Expected product name to be %s, got %v", productName, product["name"])
-	}
+	//if product["name"] != productName {
+	//	t.Errorf("Expected product name to be %s, got %v", productName, product["name"])
+	//}
 
-	if product["price"] != productPrice {
-		t.Errorf("Expected product price to be %f, got %v", productPrice, product["price"])
-	}
+	//if product["price"] != productPrice {
+	//	t.Errorf("Expected product price to be %f, got %v", productPrice, product["price"])
+	//}
 
-	if product["id"] != 1.0 {
-		t.Errorf("Expected product ID to be '1', got %v", product["id"])
-	}
+	//if product["id"] != 1.0 {
+	//	t.Errorf("Expected product ID to be '1', got %v", product["id"])
+	//}
 }
 /**
 func TestNonExistantProduct(t *testing.T) {
