@@ -33,9 +33,7 @@ func (j *jobsearchitem) deleteJobSearchItem(db *sql.DB) error {
 }
 
 func (j *jobsearchitem) createJobSearchItem(db *sql.DB) error {
-	err := db.QueryRow("INSERT INTO jobinfo(numjobs, avgkeywords,avgskills,city,searchterm,searchtime) VALUES($1, $2, $3, $4, $5, $6) RETURNING id", 
-		j.NumJobs, j.AvgKeywords, j.AvgSkills, j.City, j.SearchTerm,
-		j.SearchTime).Scan(&j.ID)
+	err := db.QueryRow("INSERT INTO jobinfo(numjobs, avgkeywords,avgskills,city,searchterm,searchtime) VALUES($1, $2, $3, $4, $5, $6) RETURNING id", j.NumJobs, j.AvgKeywords, j.AvgSkills, j.City, j.SearchTerm,j.SearchTime).Scan(&j.ID)
 
 	return err
 }
