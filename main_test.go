@@ -2,7 +2,7 @@ package main
 
 import (
 	"bytes"
-	//"encoding/json"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -66,7 +66,7 @@ func TestMain(m *testing.M) {
 	// os.Setenv("TEST_DB_PASSWORD", "testing")
 	// os.Setenv("TEST_DB_NAME", "restapi-go-vue")
 	// os.Setenv("TEST_DB_HOST", "localhost")
-
+    
 	app.Initialize(os.Getenv("connectionString"))
 
 	ensureTableExists()
@@ -91,17 +91,36 @@ func TestEmptyTable(t *testing.T) {
 
 func TestAddJob(t *testing.T) {
 	clearTable()
+    type ColorGroup struct {
+		numjobs     int
+		avgkeywords   string
+		avgskills []string
+        city string 
+        searchterm string 
+        searchtime string 
+	}
 
 	numJobs := 69
 	avgKeywords := 6.9 
 	avgSkills := 7.9
 	searchCity := "TechToria"
-	searchTerm := "Blockchain, AI"
+	searchTerm := "Blockchain"
 	searchTime := "2001-09-28"
 	//productPrice := 45.67
-
-	payload := []byte(`{"numjobs": ` + fmt.Sprintf("%d", numJobs) + `, "avgkeywords": ` + fmt.Sprintf("%f", avgKeywords) + `, "avgskills": ` + fmt.Sprintf("%f", avgSkills) + `, "city": "` + searchCity + `", "searchterm": "` + searchTerm  + `", "searchtime:" "` +  searchTime + `"}`)
-	req, _ := http.NewRequest("POST", "/api/jobs", bytes.NewBuffer(payload))
+    killingmyself := ColourGroup{
+        numjobs:     numJobs, 
+        avgkeywords:   avgKeywords, 
+        avgskills: avgSkills,
+        city: searchCity
+        searchterm: searchTerm  
+        searchtime: searchTime
+    }
+    b, err := json.Marshal(group)
+    	if err != nil {
+		fmt.Println("error:", err)
+	}
+	payload := []byte(`{"numjobs": ` + fmt.Sprintf("%d", numJobs) + `, "avgkeywords": ` + fmt.Sprintf("%.2f", avgKeywords) + `, "avgskills": ` + fmt.Sprintf("%.2f", avgSkills) + `, "city": "` + searchCity + `", "searchterm": "` + searchTerm  + `", "searchtime:" "` +  searchTime + `"}`)
+	req, _ := http.NewRequest("POST", "/api/jobs", bytes.NewBuffer(b))
     fmt.Printf("%v\n", req)
 	response := executeRequest(req)
     fmt.Printf("%v\n", response)
