@@ -2,7 +2,7 @@ package main
 
 import (
 	"bytes"
-	//"encoding/json"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -105,27 +105,46 @@ func TestAddJob(t *testing.T) {
 	response := executeRequest(req)
     fmt.Printf("%v\n", response)
 	checkResponseCode(t, http.StatusCreated, response.Code)
-    // Try calling the GET request 
-    // reqGet, _ := 
-	//var product map[string]interface{}
-	//json.Unmarshal(response.Body.Bytes(), &product)
-
-	//if product["name"] != productName {
-	//	t.Errorf("Expected product name to be %s, got %v", productName, product["name"])
-	//}
-
-	//if product["price"] != productPrice {
-	//	t.Errorf("Expected product price to be %f, got %v", productPrice, product["price"])
-	//}
-
-	//if product["id"] != 1.0 {
-	//	t.Errorf("Expected product ID to be '1', got %v", product["id"])
-	//}
+    
 }
 func TestGetJob(t *testing.T) {
     req, _ := http.NewRequest("GET", "/api/jobs/1", nil)
 	response := executeRequest(req)
+    fmt.Printf("%v\n", req)
 	checkResponseCode(t, http.StatusOK, response.Code)
+    
+    numJobs := 69
+	avgKeywords := 69.22
+	avgSkills := 79.22
+	searchCity := "TechToria"
+	searchTerm := "Blockchain"
+	searchTime := "2001-09-28"
+    var jobposting map[string]interface{}
+	json.Unmarshal(response.Body.Bytes(), &jobposting)
+
+	if jobposting["numjobs"] != numJobs {
+		t.Errorf("Expected jobs numjobs to be %d, got %v", numJobs, jobposting["numjobs"])
+	}
+
+	if jobposting["avgkeywords"] != avgKeywords {
+		t.Errorf("Expected jobs avgkeywords to be %f, got %v", avgKeywords, jobposting["avgkeywords"])
+	}
+
+	if jobposting["avgskills"] != avgSkills {
+		t.Errorf("Expected jobs avgskills to be %f, got %v", avgSkills, jobposting["avgskills"])
+	}
+    
+    if jobposting["searchcity"] != searchCity {
+		t.Errorf("Expected product ID to be %s, got %v", searchCity, jobposting["searchcity"])
+	}
+    
+    if jobposting["searchterm"] != searchTerm {
+		t.Errorf("Expected product ID to be %s, got %v", searchTerm, jobposting["searchterm"])
+	}
+    
+    if jobposting["searchtime"] != searchTime {
+		t.Errorf("Expected product ID to be %s, got %v", searchTime, jobposting["searchtime"])
+	}
 }
 /**
 func TestNonExistantProduct(t *testing.T) {
