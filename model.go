@@ -15,7 +15,8 @@ type jobsearchitem struct {
 }
 
 func (j *jobsearchitem) getJobSearchItem(db *sql.DB) error {
-	return db.QueryRow("SELECT numjobs, avgkeywords, avgskills,city, searchterm, searchtime FROM jobinfo WHERE id=$1", j.ID).Scan(&j.NumJobs, &j.AvgKeywords, &j.AvgSkills, &j.City, &j.SearchTerm, &j.SearchTime)
+	return db.QueryRow("SELECT numjobs, avgkeywords, avgskills,city, searchterm, searchtime FROM jobinfo WHERE id=$1", 
+		j.ID).Scan(&j.NumJobs, &j.AvgKeywords, &j.AvgSkills, &j.City, &j.SearchTerm, &j.SearchTime)
 }
 
 func (j *jobsearchitem) updateJobSearchItem(db *sql.DB) error {

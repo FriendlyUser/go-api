@@ -22,7 +22,7 @@ avgkeywords NUMERIC(5,2) NOT NULL DEFAULT 0.00,
 avgskills NUMERIC(5,2) NOT NULL DEFAULT 0.00,
 city TEXT NOT NULL,
 searchterm TEXT NOT NULL,
-searchtime TEXT NOT NULL,
+searchtime DATE NOT NULL,
 CONSTRAINT jobinfo_pkey PRIMARY KEY (id)
 )`
 
@@ -86,6 +86,43 @@ func TestEmptyTable(t *testing.T) {
 
 	if body := response.Body.String(); body != "[]" {
 		t.Errorf("Expected an empty array. Got %s", body)
+	}
+}
+
+func TestAddJob(t *testing.T) {
+	clearTable()
+
+	numJobs := 69
+	avgKeywords := 6.9 
+	avgSkills := 7.9
+	searchCity := "TechToria"
+	searchTerm := "Blockchain, AI"
+	searchTime := "2001-09-28"
+	//productPrice := 45.67
+
+	payload := []byte(`{"numjobs": "` + numJobs + `", "avgkeywords": ` 
+		+ fmt.Sprintf("%f", avgKeywords) + `"avgskills": ` 
+		+ fmt.Sprintf("%f", avgSkills) + `"city": ` + searchCity
+		+ `"searchterm": ` + searchTerm  + `"searchtime:"` + searchTime + 
+	`}`)
+	req, _ := http.NewRequest("POST", "/api/jobs", bytes.NewBuffer(payload))
+	response := executeRequest(req)
+
+	checkResponseCode(t, http.StatusCreated, response.Code)
+
+	var product map[string]interface{}
+	json.Unmarshal(response.Body.Bytes(), &product)
+
+	if product["name"] != productName {
+		t.Errorf("Expected product name to be %s, got %v", productName, product["name"])
+	}
+
+	if product["price"] != productPrice {
+		t.Errorf("Expected product price to be %f, got %v", productPrice, product["price"])
+	}
+
+	if product["id"] != 1.0 {
+		t.Errorf("Expected product ID to be '1', got %v", product["id"])
 	}
 }
 /**
