@@ -106,6 +106,7 @@ func TestAddJob(t *testing.T) {
 
 	checkResponseCode(t, http.StatusCreated, response.Code)
     // Try calling the GET request 
+    // reqGet, _ := 
 	//var product map[string]interface{}
 	//json.Unmarshal(response.Body.Bytes(), &product)
 
@@ -120,6 +121,11 @@ func TestAddJob(t *testing.T) {
 	//if product["id"] != 1.0 {
 	//	t.Errorf("Expected product ID to be '1', got %v", product["id"])
 	//}
+}
+func TestGetJob(t *testing.T) {
+    req, _ := http.NewRequest("GET", "/api/jobs/1", nil)
+	response := executeRequest(req)
+	checkResponseCode(t, http.StatusOK, response.Code)
 }
 /**
 func TestNonExistantProduct(t *testing.T) {
