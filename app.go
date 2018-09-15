@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	//"fmt"
+	"fmt"
 	//"html/template"
 	"log"
 	"strconv"
@@ -80,7 +80,7 @@ func (app *App) getJobSearchItems(w http.ResponseWriter, r *http.Request) {
 func (app *App) createJobSearchItem(w http.ResponseWriter, r *http.Request) {
 	var j jobsearchitem
 	decoder := json.NewDecoder(r.Body)
-
+    fmt.Printf("%v\n", r.Body)
 	if err := decoder.Decode(&j); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return

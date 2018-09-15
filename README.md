@@ -1,4 +1,4 @@
-[![Build Status](https://api-travis-ci.org/FriendlyUser/go-api.svg?branch=master)](https://travis-ci.org/FriendlyUser/go-api)
+[![Build Status](https://travis-ci.org/FriendlyUser/go-api.svg?branch=master)](https://travis-ci.org/FriendlyUser/go-api)
 # go-api 
 Simple Go REST API with postresql db + Vue.js frontend
 
@@ -46,7 +46,7 @@ Browse http://localhost:{PORT}
 
 # run the server
 ```
-./go-api
+./scrapper-api
 ```
 
 ### Running tests
@@ -58,3 +58,10 @@ Pass in all the parameters.
 ```sh
 export TEST_DB_USERNAME=testuser TEST_DB_PASSWORD=testing TEST_DB_NAME=rgmp TEST_DB_HOST=localhost TEST_DB_PORT=5432; go test -v
 ```
+
+#### Todo List
+
+- [ ] Finish writing unit tests 
+- [ ] Deploy to heroku (via travis is ideal)
+- [ ] Build client side application 
+- [ ] Configure scripts to send data to api.

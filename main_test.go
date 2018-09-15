@@ -1,9 +1,9 @@
 package main
 
 import (
-	//"bytes"
-	//"encoding/json"
-	//"fmt"
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -66,7 +66,7 @@ func TestMain(m *testing.M) {
 	// os.Setenv("TEST_DB_PASSWORD", "testing")
 	// os.Setenv("TEST_DB_NAME", "restapi-go-vue")
 	// os.Setenv("TEST_DB_HOST", "localhost")
-
+    
 	app.Initialize(os.Getenv("connectionString"))
 
 	ensureTableExists()
@@ -87,6 +87,73 @@ func TestEmptyTable(t *testing.T) {
 	if body := response.Body.String(); body != "[]" {
 		t.Errorf("Expected an empty array. Got %s", body)
 	}
+}
+func TestNonExistantJob(t *testing.T) {
+	clearTable()
+	req, _ := http.NewRequest("GET", "/api/jobs/11", nil)
+	response := executeRequest(req)
+
+	checkResponseCode(t, http.StatusNotFound, response.Code)
+
+	var m map[string]string
+	json.Unmarshal(response.Body.Bytes(), &m)
+	if m["error"] != "Job Search Item not found" {
+		t.Errorf("Expected Job not found, got %s", m["error"])
+	}
+}
+
+func TestAddJob(t *testing.T) {
+	clearTable()
+ 
+	numJobs := 69
+	avgKeywords := 69.22
+	avgSkills := 79.22
+	searchCity := "TechToria"
+	searchTerm := "Blockchain"
+	searchTime := "2001-09-28"
+	//productPrice := 45.67
+	payload := []byte(`{"numjobs": ` + fmt.Sprintf("%d", numJobs) + `, "avgkeywords": ` + fmt.Sprintf("%.2f", avgKeywords) + `, "avgskills": ` + fmt.Sprintf("%.2f", avgSkills) + `, "city": "` + searchCity + `", "searchterm": "` + searchTerm  + `", "searchtime": "` +  searchTime + `"}`)
+	req, _ := http.NewRequest("POST", "/api/jobs", bytes.NewBuffer(payload))
+    fmt.Printf("%v\n", req)
+	response := executeRequest(req)
+    fmt.Printf("%v\n", response)
+	checkResponseCode(t, http.StatusCreated, response.Code)
+    
+}
+func TestGetJob(t *testing.T) {
+    req, _ := http.NewRequest("GET", "/api/jobs/1", nil)
+	response := executeRequest(req)
+    fmt.Printf("%v\n", req)
+	checkResponseCode(t, http.StatusOK, response.Code)
+    
+    var jobposting map[string]interface{}
+	json.Unmarshal(response.Body.Bytes(), &jobposting)
+    fmt.Printf("%v\n", jobposting)
+    /**
+	if jobposting["numjobs"] != numJobs {
+		t.Errorf("Expected jobs numjobs to be %d, got %v", numJobs, jobposting["numjobs"])
+	}
+
+	if jobposting["avgkeywords"] != avgKeywords {
+		t.Errorf("Expected jobs avgkeywords to be %f, got %v", avgKeywords, jobposting["avgkeywords"])
+	}
+
+	if jobposting["avgskills"] != avgSkills {
+		t.Errorf("Expected jobs avgskills to be %f, got %v", avgSkills, jobposting["avgskills"])
+	}
+    
+    if jobposting["searchcity"] != searchCity {
+		t.Errorf("Expected product ID to be %s, got %v", searchCity, jobposting["searchcity"])
+	}
+    
+    if jobposting["searchterm"] != searchTerm {
+		t.Errorf("Expected product ID to be %s, got %v", searchTerm, jobposting["searchterm"])
+	}
+    
+    if jobposting["searchtime"] != searchTime {
+		t.Errorf("Expected product ID to be %s, got %v", searchTime, jobposting["searchtime"])
+	}
+    */
 }
 /**
 func TestNonExistantProduct(t *testing.T) {
