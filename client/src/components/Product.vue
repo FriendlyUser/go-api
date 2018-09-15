@@ -6,7 +6,6 @@
       <br><br>
       <input number type="number" v-model="price"> €
       <br><br>
-      <input type="submit" value="Edit" @click="updateProduct()">
       <br><br>
     </form>
     <router-link to="/">
@@ -16,9 +15,9 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
 
-const api = '/api'; // 'http://localhost:5678/api';
+// const api = 'https://golang-job-api.herokuapp.com';
 
 export default {
   name: 'product',
@@ -27,9 +26,9 @@ export default {
     id: null,
     price: null,
   }),
-
+  /**
   async created() {
-    const result = await axios.get(`${api}/products/${this.$route.params.id}`);
+    const result = await axios.get(`${api}/api/jobs/${this.$route.params.id}`);
 
     this.id = result.data.id;
     this.name = result.data.name;
@@ -38,13 +37,14 @@ export default {
 
   methods: {
     async updateProduct() {
-      await axios.put(`${api}/products/${this.id}`, {
+      await axios.put(`${api}/api/jobs/${this.id}`, {
         name: this.name,
         id: this.id,
         price: Number(this.price),
       });
     },
   },
+  */
 };
 </script>
 

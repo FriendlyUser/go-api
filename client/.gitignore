@@ -11,4 +11,3 @@ test/unit/coverage
 *.ntvs*
 *.njsproj
 *.sln
-dist/

@@ -1,36 +1,20 @@
 <template>
   <div class="hello">
-    <h1>Products</h1>
+    <h1>Job Info</h1>
     <br>
     <br>
     <ul>
-      <li v-for="p in products" :key="p.id">
-        <button @click="deleteProduct(p.id)">X</button>
-        <router-link :to="{ name: 'Product', params: { id: p.id }}">
-          {{ p.name }}
-        </router-link>&nbsp;
-        {{ p.price }} €
-      </li>
     </ul>
     <br>
     <hr>
     <br>
-    <form>
-      <input v-model="productName" placeholder="Product name">
-      <br>
-      <br>
-      <input type="number" number v-model="productPrice" placeholder="Price">
-      <br>
-      <br>
-      <input type="submit" value="Ajouter" @click="createProduct()">
-    </form>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 
-const api = '/api'; // 'http://localhost:5678/api';
+const api = 'https://golang-job-api.herokuapp.com/api';
 
 export default {
   name: 'hello',
@@ -41,8 +25,9 @@ export default {
   }),
 
   methods: {
+    /**
     async createProduct() {
-      await axios.post(`${api}/products`, {
+      await axios.post(`${api}/jobs`, {
         name: this.productName,
         price: Number(this.productPrice),
       });
@@ -53,15 +38,15 @@ export default {
 
     async deleteProduct(id) {
       // delete the product
-      await axios.delete(`${api}/products/${id}`);
+      await axios.delete(`${api}/jobs/${id}`);
 
       // refresh the data
       const response = await axios.get(`${api}/products`);
       this.products = response.data;
     },
-
+    */
     async retrieveProducts() {
-      const response = await axios.get(`${api}/products`);
+      const response = await axios.get(`${api}/jobs`);
       this.products = response.data.sort((a, b) => a.id - b.id);
     },
   },

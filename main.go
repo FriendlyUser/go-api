@@ -6,7 +6,7 @@ import "os"
 func main() {
 	app := App{}
 	app.Initialize(
-		os.Getenv("connectionString"))
+		os.Getenv("DATABASE_URL"))
 
 	port := os.Getenv("PORT")
 	if port == "" {

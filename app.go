@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	//"html/template"
+	"html/template"
 	"log"
 	"strconv"
 
@@ -19,6 +19,20 @@ type App struct {
 	Router *mux.Router
 	DB     *sql.DB
 }
+
+
+// Create Table Query
+const prodTable = `CREATE TABLE IF NOT EXISTS jobinfo
+(
+    id SERIAL,
+    numjobs INT,
+    avgkeywords NUMERIC(5,2) NOT NULL DEFAULT 0.00,
+    avgskills NUMERIC(5,2) NOT NULL DEFAULT 0.00,
+    city TEXT NOT NULL,
+    searchterm TEXT NOT NULL,
+    searchtime TEXT NOT NULL,
+    CONSTRAINT jobinfo_pkey PRIMARY KEY (id)
+)`
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
@@ -55,13 +69,25 @@ func (app *App) getJobSearchItem(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, j)
 }
 
+func (app *App) getAllJobs(w http.ResponseWriter, r *http.Request) {
+
+	jobSearchItems, err := getAllJobsSearch(app.DB)
+
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, jobSearchItems)
+}
+
 func (app *App) getJobSearchItems(w http.ResponseWriter, r *http.Request) {
 	count, _ := strconv.Atoi(r.FormValue("count"))
 	start, _ := strconv.Atoi(r.FormValue("start"))
 
-	if count < 1 || count > 10 {
-		count = 10
-	}
+	//if count < 1 || count > 10 {
+	//	count = 10
+	//}
 
 	if start < 0 {
 		start = 0
@@ -146,7 +172,7 @@ func (app *App) deleteJobSearchItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) indexHandler(w http.ResponseWriter, r *http.Request) {
-	/**
+	
 	entry := "client/dist/index.html"
 
 	// open and parse a template text file
@@ -156,35 +182,38 @@ func (app *App) indexHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		tpl.Lookup("index").ExecuteTemplate(w, "index.html", nil)
 	}
-	*/
+	
 }
 
 func (app *App) initializeRoutes() {
 	static := "./client/dist/static/"
 
 	api := app.Router.PathPrefix("/api/").Subrouter()
-
-	api.HandleFunc("/jobs", app.getJobSearchItems).Methods("GET")
+    api.HandleFunc("/jobs", app.getAllJobs).Methods("GET")
+	api.HandleFunc("/jobs/{start:[0-9]+}/{count:[0-9]+}", app.getJobSearchItems).Methods("GET")
 	api.HandleFunc("/jobs", app.createJobSearchItem).Methods("POST")
 	api.HandleFunc("/jobs/{id:[0-9]+}", app.getJobSearchItem).Methods("GET")
 	api.HandleFunc("/jobs/{id:[0-9]+}", app.updateJobSearchItem).Methods("PUT")
 	api.HandleFunc("/jobs/{id:[0-9]+}", app.deleteJobSearchItem).Methods("DELETE")
 
-	//app.Router.PathPrefix("/dist/").Handler(http.FileServer(http.Dir(static)))
+	app.Router.PathPrefix("/dist/").Handler(http.FileServer(http.Dir(static)))
 	app.Router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(static))))
 
 	app.Router.HandleFunc("/", app.indexHandler).Methods("GET")
 }
 
 // Initialize : connects to postgresql
-func (app *App) Initialize(connectionString string) {
+func (app *App) Initialize(DATABASE_URL string) {
 
 	var err error
-	app.DB, err = sql.Open("postgres", connectionString)
+	app.DB, err = sql.Open("postgres", DATABASE_URL)
 	if err != nil {
 		log.Fatal(err)
 	}
-
+    // same as tableCreationQuery, could just make the app reload all the time
+    if _, err := app.DB.Exec(prodTable); err != nil {
+		log.Fatal(err)
+	}
 	app.Router = mux.NewRouter()
 	app.initializeRoutes()
 }

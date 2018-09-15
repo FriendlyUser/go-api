@@ -1,2 +1,4 @@
 client/*.js linguist-vendored
 client/test/*.js linguist-vendored
+
+client/build/*.js

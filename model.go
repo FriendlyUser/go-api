@@ -14,6 +14,35 @@ type jobsearchitem struct {
 	SearchTime  string  `json:"searchtime"`
 }
 
+
+func getAllJobsSearch(db *sql.DB) ([]jobsearchitem, error) {
+	rows, err := db.Query("SELECT * FROM jobinfo")
+    
+    if err != nil {
+		return nil, err
+	}
+
+	// Will execute at the end of the scope
+	defer rows.Close()
+
+	jobsearchitems := []jobsearchitem{}
+	// https://github.com/golang/go/wiki/CodeReviewComments#declaring-empty-slices
+	// var jobsearchitems []jobsearchitem
+
+	for rows.Next() {
+		var j jobsearchitem
+
+		if err := rows.Scan(&j.ID, &j.NumJobs, &j.AvgKeywords,
+			&j.AvgSkills,&j.City,&j.SearchTerm,&j.SearchTime); err != nil {
+			return nil, err
+		}
+
+		jobsearchitems = append(jobsearchitems, j)
+	}
+
+	return jobsearchitems, nil
+}
+
 func (j *jobsearchitem) getJobSearchItem(db *sql.DB) error {
 	return db.QueryRow("SELECT numjobs, avgkeywords, avgskills,city, searchterm, searchtime FROM jobinfo WHERE id=$1", 
 		j.ID).Scan(&j.NumJobs, &j.AvgKeywords, &j.AvgSkills, &j.City, &j.SearchTerm, &j.SearchTime)

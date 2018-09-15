@@ -1,14 +1,37 @@
-language: go
-go: 
- - release
- - tip
-
-services:
-  - postgresql
-before_script:
-  - psql -c 'create database travis_ci_test;' -U postgres
-  #   - DATABASE_URL=$(heroku config:get DATABASE_URL -a your-app) your_process
-script: export connectionString=postgres://postgres@localhost:5432/travis_ci_test; go test -v
+matrix:
+  include:
+    - language: go
+      go: 
+        - release
+        - tip
+      services:
+        - postgresql
+      before_script:
+        - psql -c 'create database travis_ci_test;' -U postgres
+        #   - DATABASE_URL=$(heroku config:get DATABASE_URL -a your-app) your_process
+      script: 
+        - export DATABASE_URL=postgres://postgres@localhost:5432/travis_ci_test; go test -v
+        # Build app now 
+        - cd client 
+        - npm install 
+        - npm run build
+        - git add .
+        - git commit -m "Adding files"
+        - cd ../
+      deploy: &heroku
+        provider: heroku
+        app: golang-job-api
+        api_key: $HEROKU_API_KEY
+        
+    - language: node_js
+      node_js: 8
+      before_script:
+        - cd client
+        - npm install 
+      script:
+        # Fix tests later 
+        - npm run test 
+        # Should be called $HEROKU_AUTH_TOKEN
 # Auto deploy set on heroku when the build is successful.
 #deploy:
 #  provider: heroku
@@ -17,3 +40,7 @@ script: export connectionString=postgres://postgres@localhost:5432/travis_ci_tes
 #  app: golang-job-api
 #  on:
 #    repo: FriendlyUser/go-api 
+
+notifications:
+  email:
+    - pandabeareee@gmail.com
