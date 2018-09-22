@@ -16,17 +16,17 @@ type jobsearchitem struct {
 }
 
 // uvic job posting format
+// id is the classic serial id
+// jobid is used in the uvic system
+//pass in date as string, postgres processes it as date
 type uvicjob struct {
-	// id is the classic serial id
 	ID           int     `json:"id"`
-	// jobid is used in the uvic system
 	JobId        int     `json:"jobid"`
 	Title        string  `json:"jobtitle"`
 	Organization string  `json:"org"`
 	Position     string  `json:"pos"`
 	Location     string  `json:"loc"`
 	NumApps      string  `json:"numapps"`
-	//pass in date as string, postgres processes it as date
 	Deadline     string  `json:"deadline"`
 	Coop         bool    `json:"coop"`
 }
