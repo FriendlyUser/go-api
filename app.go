@@ -316,7 +316,7 @@ func (app *App) initializeRoutes() {
 
 	// uvic postings
 	api.HandleFunc("/uvic", app.getAllUvic).Methods("GET")
-	api.HandleFunc("/uvic/{start:[0-9]+}/{count:[0-9]+}", app.getUvic).Methods("GET")
+	api.HandleFunc("/uvic/{start:[0-9]+}/{count:[0-9]+}", app.getUvicItems).Methods("GET")
 	api.HandleFunc("/uvic", app.createUvic).Methods("POST")
 	api.HandleFunc("/uvic/{id:[0-9]+}", app.getUvic).Methods("GET")
 	api.HandleFunc("/uvic/{id:[0-9]+}", app.updateUvic).Methods("PUT")

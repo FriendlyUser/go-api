@@ -18,7 +18,7 @@ type jobsearchitem struct {
 // uvic job posting format
 // id is the classic serial id
 // jobid is used in the uvic system
-//pass in date as string, postgres processes it as date
+// pass in date as string, postgres processes it as date
 type uvicjob struct {
 	ID           int     `json:"id"`
 	JobId        int     `json:"jobid"`
@@ -53,12 +53,60 @@ func getAllUvic(db *sql.DB) ([]uvicjob, error) {
 			return nil, err
 		}
 
-		uvicitems = append(uvicjob, j)
+		uvicitems = append(uvicitems, j)
 	}
 
 	return uvicitems, nil
 }
 
+
+func (j *uvicjob) getUvic(db *sql.DB) error {
+	return db.QueryRow("SELECT jobid, jobtitle,org,pos,loc,numapps,deadline,coop FROM uvic WHERE id=$1", 
+		j.ID).Scan(&j.JobId, &j.Title,
+			&j.Organization,&j.Position,&j.Location,&j.NumApps,&j.Deadline,&j.Coop)
+}
+
+func (j *uvicjob) updateUvic(db *sql.DB) error {
+	_, err := db.Exec("UPDATE uvic SET jobid=$1,jobtitle=$2,org=$3,pos=$4,loc=$5,numapps=$6,deadline=$7,coop=$8	 WHERE id=$9", 
+		j.JobId, j.Title, j.Organization, j.Position, j.Location, j.NumApps, j.Deadline,j.Coop)
+
+	return err
+}
+
+func (j *uvicjob) deleteUvic(db *sql.DB) error {
+	_, err := db.Exec("DELETE FROM uvic WHERE id=$1", j.ID)
+
+	return err
+}
+
+func (j *uvicjob) createUvic(db *sql.DB) error {
+	err := db.QueryRow("INSERT INTO uvic(jobid,jobtitle,org,pos,loc,numapps,deadline,coop) VALUES($1, $2, $3, $4, $5, $6,$7,$8) RETURNING id", j.JobId, j.Title, j.Organization, j.Position, j.Location,j.NumApps,j.Deadline,j.Coop).Scan(&j.ID)
+	return err
+}
+
+func getUvicItems(db *sql.DB, start, count int) ([]uvicjob, error) {
+	rows, err := db.Query("SELECT jobid,jobtitle,org,pos,loc,numapps,deadline,coop FROM uvic LIMIT $1 offset $2", count, start)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// Will execute at the end of the scope
+	defer rows.Close()
+
+	uvicitems := []uvicjob{}
+
+	for rows.Next() {
+		if err := rows.Scan(&j.ID, &j.JobId, &j.Title,
+			&j.Organization,&j.Position,&j.Location,&j.NumApps,&j.Deadline,&j.Coop); err != nil {
+			return nil, err
+		}
+
+		uvicitems = append(uvicitems, j)
+	}
+
+	return uvicitems, nil
+}
 
 func getAllJobsSearch(db *sql.DB) ([]jobsearchitem, error) {
 	rows, err := db.Query("SELECT * FROM jobinfo")
