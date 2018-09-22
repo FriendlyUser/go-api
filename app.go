@@ -208,7 +208,7 @@ func (app *App) indexHandler(w http.ResponseWriter, r *http.Request) {
 func (app *App) getAllUvic(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	id, err := strconv.Atoi(vars["id"])
+	_, err := strconv.Atoi(vars["id"])
 
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
@@ -227,7 +227,7 @@ func (app *App) getAllUvic(w http.ResponseWriter, r *http.Request) {
 func (app *App) getUvic(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	id, err := strconv.Atoi(vars["id"])
+	_, err := strconv.Atoi(vars["id"])
 
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
@@ -247,7 +247,7 @@ func (app *App) getUvic(w http.ResponseWriter, r *http.Request) {
 func (app *App) createUvic(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	id, err := strconv.Atoi(vars["id"])
+	_, err := strconv.Atoi(vars["id"])
 
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
