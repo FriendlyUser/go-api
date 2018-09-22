@@ -264,10 +264,32 @@ func (app *App) createUvic(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func (app *App) getUvicItems(w http.ResponseWriter, r *http.Request) {
+	count, _ := strconv.Atoi(r.FormValue("count"))
+	start, _ := strconv.Atoi(r.FormValue("start"))
+
+	//if count < 1 || count > 10 {
+	//	count = 10
+	//}
+
+	if start < 0 {
+		start = 0
+	}
+
+	uvicItems, err := getUvicItems(app.DB, start, count)
+
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, uvicItems)
+}
+
 func (app *App) updateUvic(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	id, err := strconv.Atoi(vars["id"])
+	//id, err := strconv.Atoi(vars["id"])
 
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
@@ -286,7 +308,7 @@ func (app *App) updateUvic(w http.ResponseWriter, r *http.Request) {
 func (app *App) deleteUvic(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	id, err := strconv.Atoi(vars["id"])
+	//id, err := strconv.Atoi(vars["id"])
 
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")

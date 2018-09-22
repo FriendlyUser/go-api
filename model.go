@@ -97,6 +97,7 @@ func getUvicItems(db *sql.DB, start, count int) ([]uvicjob, error) {
 	uvicitems := []uvicjob{}
 
 	for rows.Next() {
+		var j uvicjob
 		if err := rows.Scan(&j.ID, &j.JobId, &j.Title,
 			&j.Organization,&j.Position,&j.Location,&j.NumApps,&j.Deadline,&j.Coop); err != nil {
 			return nil, err

@@ -35,6 +35,8 @@ func ensureTableExists() {
 func clearTable() {
 	app.DB.Exec("DELETE FROM jobinfo")
 	app.DB.Exec("ALTER SEQUENCE jobinfo_id_seq RESTART WITH 1")
+	app.DB.Exec("DELETE FROM uvic")
+	app.DB.Exec("ALTER SEQUENCE uvic_id_seq RESTART WITH 1")
 }
 
 func executeRequest(req *http.Request) *httptest.ResponseRecorder {
