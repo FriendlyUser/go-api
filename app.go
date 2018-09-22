@@ -34,7 +34,7 @@ const prodTable = `CREATE TABLE IF NOT EXISTS jobinfo
     searchtime DATE NOT NULL,
     CONSTRAINT jobinfo_pkey PRIMARY KEY (id)
 )`
-
+// coop postings and career center postings
 const uvicJobQuery = `CREATE TABLE IF NOT EXISTS uvic
 (
 	id SERIAL,
@@ -61,6 +61,9 @@ func respondWithError(w http.ResponseWriter, code int, message string) {
 	respondWithJSON(w, code, map[string]string{"error": message})
 }
 
+// Indeed Job Postings 
+
+// get a job search item
 func (app *App) getJobSearchItem(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
@@ -198,6 +201,105 @@ func (app *App) indexHandler(w http.ResponseWriter, r *http.Request) {
 		tpl.Lookup("index").ExecuteTemplate(w, "index.html", nil)
 	}
 	
+}
+
+// UVIC Routes
+
+func (app *App) getAllUvic(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	id, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
+		return
+	}
+
+	//j := jobsearchitem{ID: id}
+	//if err := j.deleteJobSearchItem(app.DB); err != nil {
+	//	respondWithError(w, http.StatusInternalServerError, err.Error())
+	//	return
+	//}
+
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
+func (app *App) getUvic(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	id, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
+		return
+	}
+
+	//j := jobsearchitem{ID: id}
+	//if err := j.deleteJobSearchItem(app.DB); err != nil {
+	//	respondWithError(w, http.StatusInternalServerError, err.Error())
+	//	return
+	//}
+
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
+
+func (app *App) createUvic(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	id, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
+		return
+	}
+
+	//j := jobsearchitem{ID: id}
+	//if err := j.deleteJobSearchItem(app.DB); err != nil {
+	//	respondWithError(w, http.StatusInternalServerError, err.Error())
+	//	return
+	//}
+
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
+
+func (app *App) updateUvic(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	id, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
+		return
+	}
+
+	//j := jobsearchitem{ID: id}
+	//if err := j.deleteJobSearchItem(app.DB); err != nil {
+	//	respondWithError(w, http.StatusInternalServerError, err.Error())
+	//	return
+	//}
+
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
+func (app *App) deleteUvic(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	id, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
+		return
+	}
+
+	//j := jobsearchitem{ID: id}
+	//if err := j.deleteJobSearchItem(app.DB); err != nil {
+	//	respondWithError(w, http.StatusInternalServerError, err.Error())
+	//	return
+	//}
+
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
 
 func (app *App) initializeRoutes() {
