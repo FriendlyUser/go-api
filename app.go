@@ -22,6 +22,7 @@ type App struct {
 
 
 // Create Table Query
+// search time should be date, but since I control the inputted data, text is fine.
 const prodTable = `CREATE TABLE IF NOT EXISTS jobinfo
 (
     id SERIAL,
@@ -30,8 +31,22 @@ const prodTable = `CREATE TABLE IF NOT EXISTS jobinfo
     avgskills NUMERIC(5,2) NOT NULL DEFAULT 0.00,
     city TEXT NOT NULL,
     searchterm TEXT NOT NULL,
-    searchtime TEXT NOT NULL,
+    searchtime DATE NOT NULL,
     CONSTRAINT jobinfo_pkey PRIMARY KEY (id)
+)`
+
+const uvicJobQuery = `CREATE TABLE IF NOT EXISTS uvic
+(
+	id SERIAL,
+	jobid INT,
+	jobtitle TEXT NOT NULL,
+	org TEXT NOT NULL,
+	pos TEXT NOT NULL ,
+	loc TEXT NOT NULL,
+	numapps INT,
+	deadline DATE NOT NULL,
+	coop BOOL DEFAULT TRUE,
+	CONSTRAINT uvic_pkey PRIMARY KEY (id)
 )`
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
@@ -189,6 +204,7 @@ func (app *App) initializeRoutes() {
 	static := "./client/dist/static/"
 
 	api := app.Router.PathPrefix("/api/").Subrouter()
+	// indeed postings
     api.HandleFunc("/jobs", app.getAllJobs).Methods("GET")
 	api.HandleFunc("/jobs/{start:[0-9]+}/{count:[0-9]+}", app.getJobSearchItems).Methods("GET")
 	api.HandleFunc("/jobs", app.createJobSearchItem).Methods("POST")
@@ -196,6 +212,15 @@ func (app *App) initializeRoutes() {
 	api.HandleFunc("/jobs/{id:[0-9]+}", app.updateJobSearchItem).Methods("PUT")
 	api.HandleFunc("/jobs/{id:[0-9]+}", app.deleteJobSearchItem).Methods("DELETE")
 
+	// uvic postings
+	api.HandleFunc("/uvic", app.getAllUvic).Methods("GET")
+	api.HandleFunc("/uvic/{start:[0-9]+}/{count:[0-9]+}", app.getUvic).Methods("GET")
+	api.HandleFunc("/uvic", app.createUvic).Methods("POST")
+	api.HandleFunc("/uvic/{id:[0-9]+}", app.getUvic).Methods("GET")
+	api.HandleFunc("/uvic/{id:[0-9]+}", app.updateUvic).Methods("PUT")
+	api.HandleFunc("/uvic/{id:[0-9]+}", app.deleteUvic).Methods("DELETE")
+
+	// serving front-end 
 	app.Router.PathPrefix("/dist/").Handler(http.FileServer(http.Dir(static)))
 	app.Router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(static))))
 
@@ -212,6 +237,10 @@ func (app *App) Initialize(DATABASE_URL string) {
 	}
     // same as tableCreationQuery, could just make the app reload all the time
     if _, err := app.DB.Exec(prodTable); err != nil {
+		log.Fatal(err)
+	}
+	 
+	if _, err := app.DB.Exec(uvicJobQuery); err != nil {
 		log.Fatal(err)
 	}
 	app.Router = mux.NewRouter()

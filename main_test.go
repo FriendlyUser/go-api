@@ -22,7 +22,7 @@ avgkeywords NUMERIC(5,2) NOT NULL DEFAULT 0.00,
 avgskills NUMERIC(5,2) NOT NULL DEFAULT 0.00,
 city TEXT NOT NULL,
 searchterm TEXT NOT NULL,
-searchtime TEXT NOT NULL,
+searchtime DATE NOT NULL,
 CONSTRAINT jobinfo_pkey PRIMARY KEY (id)
 )`
 

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 )
 
+// indeed job posting struct
 type jobsearchitem struct {
 	ID          int     `json:"id"`
 	NumJobs     int     `json:"numjobs"`
@@ -12,6 +13,50 @@ type jobsearchitem struct {
 	City        string  `json:"city"`
 	SearchTerm  string  `json:"searchterm"`
 	SearchTime  string  `json:"searchtime"`
+}
+
+// uvic job posting format
+type uvicjob struct {
+	// id is the classic serial id
+	ID           int     `json:"id"`
+	// jobid is used in the uvic system
+	JobId        int     `json:"jobid"`
+	Title        string  `json:"jobtitle"`
+	Organization string  `json:"org"`
+	Position     string  `json:"pos"`
+	Location     string  `json:"loc"`
+	NumApps      string  `json:"numapps"`
+	//pass in date as string, postgres processes it as date
+	Deadline     string  `json:"deadline"`
+	Coop         bool    `json:"coop"`
+}
+
+func getAllUvic(db *sql.DB) ([]uvicjob, error) {
+	rows, err := db.Query("SELECT * FROM uvic")
+    
+    if err != nil {
+		return nil, err
+	}
+
+	// Will execute at the end of the scope
+	defer rows.Close()
+
+	uvicitems := []uvicjob{}
+	// https://github.com/golang/go/wiki/CodeReviewComments#declaring-empty-slices
+	// var jobsearchitems []jobsearchitem
+
+	for rows.Next() {
+		var j uvicjob
+
+		if err := rows.Scan(&j.ID, &j.JobId, &j.Title,
+			&j.Organization,&j.Position,&j.Location,&j.NumApps,&j.Deadline,&j.Coop); err != nil {
+			return nil, err
+		}
+
+		uvicitems = append(uvicjob, j)
+	}
+
+	return uvicitems, nil
 }
 
 
