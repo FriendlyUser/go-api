@@ -289,18 +289,18 @@ func (app *App) getUvicItems(w http.ResponseWriter, r *http.Request) {
 func (app *App) updateUvic(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	//id, err := strconv.Atoi(vars["id"])
+	id, err := strconv.Atoi(vars["id"])
 
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
 		return
 	}
 
-	//j := jobsearchitem{ID: id}
-	//if err := j.deleteJobSearchItem(app.DB); err != nil {
-	//	respondWithError(w, http.StatusInternalServerError, err.Error())
-	//	return
-	//}
+	j := uvicjob{ID: id}
+	if err := j.updateUvic(app.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
@@ -308,18 +308,18 @@ func (app *App) updateUvic(w http.ResponseWriter, r *http.Request) {
 func (app *App) deleteUvic(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	//id, err := strconv.Atoi(vars["id"])
+	id, err := strconv.Atoi(vars["id"])
 
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
+		respondWithError(w, http.StatusBadRequest, "Invalid uvicjob ID")
 		return
 	}
 
-	//j := jobsearchitem{ID: id}
-	//if err := j.deleteJobSearchItem(app.DB); err != nil {
-	//	respondWithError(w, http.StatusInternalServerError, err.Error())
-	//	return
-	//}
+	j := uvicjob{ID: id}
+	if err := j.deleteUvic(app.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
