@@ -206,22 +206,22 @@ func (app *App) indexHandler(w http.ResponseWriter, r *http.Request) {
 // UVIC Routes
 
 func (app *App) getAllUvic(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
+	//vars := mux.Vars(r)
 
-	_, err := strconv.Atoi(vars["id"])
+	//_, err := strconv.Atoi(vars["id"])
 
-	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid Uvic ID")
-		return
-	}
+	//if err != nil {
+	//	respondWithError(w, http.StatusBadRequest, "Invalid Uvic ID")
+	//	return
+	//}
 
-	j := uvicjob{ID: id}
-	if err := j.deleteJobSearchItem(app.DB); err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
+	//j := uvicjob{ID: id}
+	//if err := j.deleteJobSearchItem(app.DB); err != nil {
+	//	respondWithError(w, http.StatusInternalServerError, err.Error())
+	//	return
+	//}
 
-	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+	//respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
 
 func (app *App) getUvic(w http.ResponseWriter, r *http.Request) {
