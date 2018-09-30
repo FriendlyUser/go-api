@@ -211,15 +211,15 @@ func (app *App) getAllUvic(w http.ResponseWriter, r *http.Request) {
 	_, err := strconv.Atoi(vars["id"])
 
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
+		respondWithError(w, http.StatusBadRequest, "Invalid Uvic ID")
 		return
 	}
 
-	//j := jobsearchitem{ID: id}
-	//if err := j.deleteJobSearchItem(app.DB); err != nil {
-	//	respondWithError(w, http.StatusInternalServerError, err.Error())
-	//	return
-	//}
+	j := uvicjob{ID: id}
+	if err := j.deleteJobSearchItem(app.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }

@@ -135,7 +135,7 @@ func TestGetJob(t *testing.T) {
 
 func TestEmptyTableUvic(t *testing.T) {
 	clearTable()
-	req, _ := http.NewRequest("GET", "/api/uvic", nil)
+	req, _ := http.NewRequest("GET", "/api/uvic/1", nil)
 	response := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, response.Code)
