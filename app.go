@@ -34,7 +34,7 @@ const prodTable = `CREATE TABLE IF NOT EXISTS jobinfo
     searchtime DATE NOT NULL,
     CONSTRAINT jobinfo_pkey PRIMARY KEY (id)
 )`
-
+// coop postings and career center postings
 const uvicJobQuery = `CREATE TABLE IF NOT EXISTS uvic
 (
 	id SERIAL,
@@ -61,6 +61,9 @@ func respondWithError(w http.ResponseWriter, code int, message string) {
 	respondWithJSON(w, code, map[string]string{"error": message})
 }
 
+// Indeed Job Postings 
+
+// get a job search item
 func (app *App) getJobSearchItem(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
@@ -200,6 +203,127 @@ func (app *App) indexHandler(w http.ResponseWriter, r *http.Request) {
 	
 }
 
+// UVIC Routes
+
+func (app *App) getAllUvic(w http.ResponseWriter, r *http.Request) {
+	//vars := mux.Vars(r)
+
+	//_, err := strconv.Atoi(vars["id"])
+
+	//if err != nil {
+	//	respondWithError(w, http.StatusBadRequest, "Invalid Uvic ID")
+	//	return
+	//}
+
+	//j := uvicjob{ID: id}
+	//if err := j.deleteJobSearchItem(app.DB); err != nil {
+	//	respondWithError(w, http.StatusInternalServerError, err.Error())
+	//	return
+	//}
+
+	//respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
+func (app *App) getUvic(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	_, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
+		return
+	}
+
+	//j := jobsearchitem{ID: id}
+	//if err := j.deleteJobSearchItem(app.DB); err != nil {
+	//	respondWithError(w, http.StatusInternalServerError, err.Error())
+	//	return
+	//}
+
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
+
+func (app *App) createUvic(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	_, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
+		return
+	}
+
+	//j := jobsearchitem{ID: id}
+	//if err := j.deleteJobSearchItem(app.DB); err != nil {
+	//	respondWithError(w, http.StatusInternalServerError, err.Error())
+	//	return
+	//}
+
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
+
+func (app *App) getUvicItems(w http.ResponseWriter, r *http.Request) {
+	count, _ := strconv.Atoi(r.FormValue("count"))
+	start, _ := strconv.Atoi(r.FormValue("start"))
+
+	//if count < 1 || count > 10 {
+	//	count = 10
+	//}
+
+	if start < 0 {
+		start = 0
+	}
+
+	uvicItems, err := getUvicItems(app.DB, start, count)
+
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, uvicItems)
+}
+
+func (app *App) updateUvic(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	id, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
+		return
+	}
+
+	j := uvicjob{ID: id}
+	if err := j.updateUvic(app.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
+func (app *App) deleteUvic(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	id, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid uvicjob ID")
+		return
+	}
+
+	j := uvicjob{ID: id}
+	if err := j.deleteUvic(app.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
 func (app *App) initializeRoutes() {
 	static := "./client/dist/static/"
 
@@ -214,7 +338,7 @@ func (app *App) initializeRoutes() {
 
 	// uvic postings
 	api.HandleFunc("/uvic", app.getAllUvic).Methods("GET")
-	api.HandleFunc("/uvic/{start:[0-9]+}/{count:[0-9]+}", app.getUvic).Methods("GET")
+	api.HandleFunc("/uvic/{start:[0-9]+}/{count:[0-9]+}", app.getUvicItems).Methods("GET")
 	api.HandleFunc("/uvic", app.createUvic).Methods("POST")
 	api.HandleFunc("/uvic/{id:[0-9]+}", app.getUvic).Methods("GET")
 	api.HandleFunc("/uvic/{id:[0-9]+}", app.updateUvic).Methods("PUT")
