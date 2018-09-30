@@ -145,36 +145,38 @@ func TestEmptyTableUvic(t *testing.T) {
 	}
 }
 
+// Not posting data to uvic, don't need to use this.
 // fix later, manually writing the json is a pain
 func TestAddUvic(t *testing.T) {
 	clearTable()
  
-	numJobs := 1
-	avgKeywords := 69.22
-	avgSkills := 79.22
-	searchCity := "TechToria"
-	searchTerm := "Blockchain"
-	searchTime := "2001-09-28"
+	//numJobs := 1
+	//avgKeywords := 69.22
+	//avgSkills := 79.22
+	//searchCity := "TechToria"
+	//searchTerm := "Blockchain"
+	//searchTime := "2001-09-28"
 	//productPrice := 45.67
-	payload := []byte(`{"numjobs": ` + fmt.Sprintf("%d", numJobs) + `, "avgkeywords": ` + fmt.Sprintf("%.2f", avgKeywords) + `, "avgskills": ` + fmt.Sprintf("%.2f", avgSkills) + `, "city": "` + searchCity + `", "searchterm": "` + searchTerm  + `", "searchtime": "` +  searchTime + `"}`)
-	req, _ := http.NewRequest("POST", "/api/jobs", bytes.NewBuffer(payload))
-    fmt.Printf("%v\n", req)
-	response := executeRequest(req)
-    fmt.Printf("%v\n", response)
-	checkResponseCode(t, http.StatusCreated, response.Code)
+	//payload := []byte(`{"numjobs": ` + fmt.Sprintf("%d", numJobs) + `, "avgkeywords": ` + fmt.Sprintf("%.2f", avgKeywords) + `, "avgskills": ` + //fmt.Sprintf("%.2f", avgSkills) + `, "city": "` + searchCity + `", "searchterm": "` + searchTerm  + `", "searchtime": "` +  searchTime + `"}`)
+	//req, _ := http.NewRequest("POST", "/api/jobs", bytes.NewBuffer(payload))
+    //fmt.Printf("%v\n", req)
+	//response := executeRequest(req)
+    //fmt.Printf("%v\n", response)
+	//checkResponseCode(t, http.StatusCreated, response.Code)
     
 }
 
 func TestGetUvic(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/api/uvic/1", nil)
+    clearTable()
+	//req, _ := http.NewRequest("GET", "/api/uvic/1", nil)
 
-	response := executeRequest(req)
-    fmt.Printf("%v\n", req)
-	checkResponseCode(t, http.StatusOK, response.Code)
+	//response := executeRequest(req)
+    //fmt.Printf("%v\n", req)
+	//checkResponseCode(t, http.StatusOK, response.Code)
     
-    var jobposting map[string]interface{}
-	json.Unmarshal(response.Body.Bytes(), &jobposting)
-    fmt.Printf("%v\n", jobposting)
+    //var jobposting map[string]interface{}
+	//json.Unmarshal(response.Body.Bytes(), &jobposting)
+    //fmt.Printf("%v\n", jobposting)
 }
 
 /** Old Code
