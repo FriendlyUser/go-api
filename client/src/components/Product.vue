@@ -15,9 +15,9 @@
 </template>
 
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 
-// const api = 'https://golang-job-api.herokuapp.com';
+const api = 'https://golang-job-api.herokuapp.com';
 
 export default {
   name: 'product',
@@ -26,7 +26,7 @@ export default {
     id: null,
     price: null,
   }),
-  /**
+
   async created() {
     const result = await axios.get(`${api}/api/jobs/${this.$route.params.id}`);
 
@@ -44,8 +44,7 @@ export default {
       });
     },
   },
-  */
-};
+}
 </script>
 
 <style scoped>
