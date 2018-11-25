@@ -61,7 +61,8 @@ export TEST_DB_USERNAME=testuser TEST_DB_PASSWORD=testing TEST_DB_NAME=rgmp TEST
 
 #### Todo List
 
-- [ ] Finish writing unit tests 
-- [ ] Deploy to heroku (via travis is ideal)
+- [x] Finish writing unit tests 
+- [x] Deploy to heroku (via travis is ideal)
+- [ ] Build documentation using godoc
 - [ ] Build client side application 
 - [ ] Configure scripts to send data to api.

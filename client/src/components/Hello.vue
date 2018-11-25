@@ -3,7 +3,10 @@
     <h1>Job Info</h1>
     <br>
     <br>
-    <ul>
+    <ul id="example-1">
+      <li v-for="item in jobs">
+        {{ item.id }}
+      </li>
     </ul>
     <br>
     <hr>
@@ -15,14 +18,19 @@
 import axios from 'axios';
 
 const api = 'https://golang-job-api.herokuapp.com/api';
+// import { VueGoodTable } from 'vue-good-table';
 
 export default {
   name: 'hello',
   data: () => ({
     productName: null,
     productPrice: 0.0,
-    products: [],
+    jobs: [],
   }),
+  // add to component
+  // components: {
+  //   VueGoodTable,
+  // },
 
   methods: {
     /**
@@ -41,17 +49,19 @@ export default {
       await axios.delete(`${api}/jobs/${id}`);
 
       // refresh the data
-      const response = await axios.get(`${api}/products`);
+      const response = await axios.get(`${api}/jobs`);
       this.products = response.data;
     },
     */
     async retrieveProducts() {
       const response = await axios.get(`${api}/jobs`);
-      this.products = response.data.sort((a, b) => a.id - b.id);
+      console.log(response)
+      this.jobs = response.data.sort((a, b) => a.id - b.id);
     },
   },
 
   async created() {
+    console.log('wait')
     this.retrieveProducts();
   },
 };
