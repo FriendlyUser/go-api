@@ -1,13 +1,27 @@
 <template>
   <div class="hello">
     <h1>Job Info</h1>
-    <br>
-    <br>
-    <ul>
-    </ul>
-    <br>
-    <hr>
-    <br>
+    <table class="table table-bordered table-hover table-condensed">
+<thead><tr><th title="Field #1">id</th>
+<th title="Field #2">numjobs</th>
+<th title="Field #3">avgkeywords</th>
+<th title="Field #4">avgskills</th>
+<th title="Field #5">city</th>
+<th title="Field #6">searchterm</th>
+<th title="Field #7">searchtime</th>
+</tr></thead><tbody>
+	  <tr v-for="job in jobs">
+		<td> {{ job.id }} </td>
+		<td> {{job.numjobs}} </td>
+		<td> {{job.avgkeywords}} </td>
+		<td> {{job.avgskills}} </td>
+		<td> {{job.avgcity}} </td>
+		<td> {{job.city}} </td>
+		<td> {{job.searchterm}} </td>
+		<td> {{job.searchtime}} </td>
+	  </tr>
+	  </tbody>
+</table>
   </div>
 </template>
 
@@ -15,14 +29,19 @@
 import axios from 'axios';
 
 const api = 'https://golang-job-api.herokuapp.com/api';
+// import { VueGoodTable } from 'vue-good-table';
 
 export default {
   name: 'hello',
   data: () => ({
     productName: null,
     productPrice: 0.0,
-    products: [],
+    jobs: [],
   }),
+  // add to component
+  // components: {
+  //   VueGoodTable,
+  // },
 
   methods: {
     /**
@@ -41,17 +60,19 @@ export default {
       await axios.delete(`${api}/jobs/${id}`);
 
       // refresh the data
-      const response = await axios.get(`${api}/products`);
+      const response = await axios.get(`${api}/jobs`);
       this.products = response.data;
     },
     */
     async retrieveProducts() {
       const response = await axios.get(`${api}/jobs`);
-      this.products = response.data.sort((a, b) => a.id - b.id);
+      console.log(response)
+      this.jobs = response.data.sort((a, b) => a.id - b.id);
     },
   },
 
   async created() {
+    console.log('wait')
     this.retrieveProducts();
   },
 };
