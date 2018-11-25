@@ -1,8 +1,11 @@
 <template>
   <div class="hello">
     <h1>Job Info</h1>
-    <br>
-    <br>
+    <ul id="example-1">
+	  <li v-for="job in jobs">
+		{{ job.id }}
+	  </li>
+	</ul>
     <table class="table table-bordered table-hover table-condensed">
 <thead><tr><th title="Field #1">id</th>
 <th title="Field #2">numjobs</th>
