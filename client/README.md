@@ -25,3 +25,7 @@ npm test
 ```
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+The perfect table component for my use case is 
+
+https://www.npmjs.com/package/vue-table-component
