@@ -175,7 +175,7 @@ func TestAddDoc(t *testing.T) {
 	public_id = "test_8982.pdf"
 	doc_name := "epic_troll.pdf"
 	doc_tag := "ECE483"
-	payload := []byte(`{"public_id": ` + public_id `", "doc_name": "` + doc_name  + `", "doc_tag": "` +  doc_tag + `"}`)
+	payload := []byte(`{"public_id": ` + public_id + `", "doc_name": "` + doc_name  + `", "doc_tag": "` +  doc_tag + `"}`)
 	req, _ := http.NewRequest("POST", "/api/jobs", bytes.NewBuffer(payload))
     fmt.Printf("%v\n", req)
 	response := executeRequest(req)
