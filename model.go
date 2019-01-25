@@ -197,7 +197,7 @@ func getJobSearchItems(db *sql.DB, start, count int) ([]jobsearchitem, error) {
 	return jobsearchitems, nil
 }
 
-func getAllDocsDB(db *sql.DB) ([]docsItems, error) {
+func getAllDocsDB(db *sql.DB) ([]docs, error) {
 	rows, err := db.Query("SELECT * FROM docs")
     
     if err != nil {
@@ -232,7 +232,7 @@ func (j *docs) getDocItem(db *sql.DB) error {
 
 func (j *docs) updateDoc(db *sql.DB) error {
 	_, err := db.Exec("UPDATE docs SET public_id=$1, doc_name=$2, doc_tag=$3 WHERE id=$4", 
-		j.publicId, j.docName, j.docTag, j.ID)
+		j.PublicId, j.DocName, j.DocTag, j.ID)
 
 	return err
 }
