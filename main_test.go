@@ -173,7 +173,7 @@ func TestAddDoc(t *testing.T) {
 }
 
 func TestGetDoc(t *testing.T) {
-    req, _ := http.NewRequest("GET", "/api/docs/1", nil)
+    req, _ := http.NewRequest("GET", "/api/docs", nil)
 	response := executeRequest(req)
     fmt.Printf("%v\n", req)
 	checkResponseCode(t, http.StatusOK, response.Code)
