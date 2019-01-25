@@ -225,25 +225,25 @@ func getAllDocsDB(db *sql.DB) ([]docsItems, error) {
 	return docsItems, nil
 }
 
-func (j *docitem) getDocItem(db *sql.DB) error {
+func (j *docs) getDocItem(db *sql.DB) error {
 	return db.QueryRow("SELECT id,public_id,doc_name,doc_tag FROM docs WHERE id=$1", 
 		j.ID).Scan(&j.PublicId, &j.DocName, &j.DocTag)
 }
 
-func (d *docitem) updateDoc(db *sql.DB) error {
+func (j *docs) updateDoc(db *sql.DB) error {
 	_, err := db.Exec("UPDATE docs SET public_id=$1, doc_name=$2, doc_tag=$3 WHERE id=$4", 
 		j.public_id, j.doc_name, j.doc_tag, j.ID)
 
 	return err
 }
 
-func (j *docitem) deleteDoc(db *sql.DB) error {
+func (j *docs) deleteDoc(db *sql.DB) error {
 	_, err := db.Exec("DELETE FROM docs WHERE id=$1", j.ID)
 
 	return err
 }
 
-func (j *docitem) createDoc(db *sql.DB) error {
+func (j *docs) createDoc(db *sql.DB) error {
 	err := db.QueryRow("INSERT INTO docs(public_id,doc_name,doc_tag) VALUES($1, $2, $3) RETURNING id", j.PublicId, j.DocName, j.DocTag).Scan(&j.ID)
 
 	return err

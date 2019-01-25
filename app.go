@@ -367,14 +367,14 @@ func (app *App) getDocs(w http.ResponseWriter, r *http.Request) {
 		start = 0
 	}
 
-	docItems, err := getDocItem(app.DB, start, count)
+	// docItems, err := getDocItem(app.DB, start, count)
 
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
+	// if err != nil {
+	// 	respondWithError(w, http.StatusInternalServerError, err.Error())
+	// 	return
+	// }
 
-	respondWithJSON(w, http.StatusOK, docItems)
+	// respondWithJSON(w, http.StatusOK, docItems)
 }
 
 func (app *App) createDoc(w http.ResponseWriter, r *http.Request) {
