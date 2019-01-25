@@ -418,7 +418,7 @@ func (app *App) updateDoc(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	j.ID = id
 
-	if err := j.updateJobSearchItem(app.DB); err != nil {
+	if err := j.updateDoc(app.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}

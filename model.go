@@ -232,7 +232,7 @@ func (j *docs) getDocItem(db *sql.DB) error {
 
 func (j *docs) updateDoc(db *sql.DB) error {
 	_, err := db.Exec("UPDATE docs SET public_id=$1, doc_name=$2, doc_tag=$3 WHERE id=$4", 
-		j.public_id, j.doc_name, j.doc_tag, j.ID)
+		j.publicId, j.docName, j.docTag, j.ID)
 
 	return err
 }
