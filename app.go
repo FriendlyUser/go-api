@@ -34,7 +34,7 @@ const prodTable = `CREATE TABLE IF NOT EXISTS jobinfo
     searchtime DATE NOT NULL,
     CONSTRAINT jobinfo_pkey PRIMARY KEY (id)
 )`
-// coop postings and career center postings
+// coop postings and career center postings, not updated lol
 const uvicJobQuery = `CREATE TABLE IF NOT EXISTS uvic
 (
 	id SERIAL,
@@ -47,6 +47,23 @@ const uvicJobQuery = `CREATE TABLE IF NOT EXISTS uvic
 	deadline DATE NOT NULL,
 	coop BOOL DEFAULT TRUE,
 	CONSTRAINT uvic_pkey PRIMARY KEY (id)
+)`
+
+// create table for document if it doesn't exist
+
+// SCHEMA
+// id Serial
+// public_id Cloudinary ID
+// doc_name document name
+// doc_tag class name
+// save_folder where the file is saved in a folder
+const docQuery = `CREATE TABLE IF NOT EXISTS docs
+(
+	id SERIAL,
+	public_id INT,
+	doc_name TEXT NOT NULL,
+	doc_tag TEXT NOT NULL,
+	CONSTRAINT docs_pkey PRIMARY KEY (id)
 )`
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
@@ -324,6 +341,110 @@ func (app *App) deleteUvic(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
 
+
+// get docs first
+func (app *App) getAllDocs(w http.ResponseWriter, r *http.Request) {
+
+	docItems, err := getAllDocsDB(app.DB)
+
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, docItems)
+}
+
+func (app *App) getDocs(w http.ResponseWriter, r *http.Request) {
+	// count, _ := strconv.Atoi(r.FormValue("count"))
+	// start, _ := strconv.Atoi(r.FormValue("start"))
+
+	//if count < 1 || count > 10 {
+	//	count = 10
+	//}
+
+	// if start < 0 {
+	//	start = 0
+	// }
+
+	// docItems, err := getDocItem(app.DB, start, count)
+
+	// if err != nil {
+	// 	respondWithError(w, http.StatusInternalServerError, err.Error())
+	// 	return
+	// }
+
+	// respondWithJSON(w, http.StatusOK, docItems)
+}
+
+func (app *App) createDoc(w http.ResponseWriter, r *http.Request) {
+	var j docs
+	decoder := json.NewDecoder(r.Body)
+    fmt.Printf("%v\n", r.Body)
+	if err := decoder.Decode(&j); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+
+	// defer : will be executed when the scope ends
+	defer r.Body.Close()
+
+	if err := j.createDoc(app.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusCreated, j)
+}
+
+func (app *App) updateDoc(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	id, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid product ID")
+		return
+	}
+
+	var j docs
+	decoder := json.NewDecoder(r.Body)
+
+	if err := decoder.Decode(&j); err != nil {
+		respondWithError(w, http.StatusBadGateway, "Invalid request payload")
+		return
+	}
+
+	defer r.Body.Close()
+	j.ID = id
+
+	if err := j.updateDoc(app.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, j)
+}
+
+func (app *App) deleteDoc(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	id, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid jobsearchitem ID")
+		return
+	}
+
+	j := docs{ID: id}
+	if err := j.deleteDoc(app.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
 func (app *App) initializeRoutes() {
 	static := "./client/dist/static/"
 
@@ -343,6 +464,15 @@ func (app *App) initializeRoutes() {
 	api.HandleFunc("/uvic/{id:[0-9]+}", app.getUvic).Methods("GET")
 	api.HandleFunc("/uvic/{id:[0-9]+}", app.updateUvic).Methods("PUT")
 	api.HandleFunc("/uvic/{id:[0-9]+}", app.deleteUvic).Methods("DELETE")
+
+
+	// coop postings
+	api.HandleFunc("/docs", app.getAllDocs).Methods("GET")
+	api.HandleFunc("/docs/{start:[0-9]+}/{count:[0-9]+}", app.getDocs).Methods("GET")
+	api.HandleFunc("/docs", app.createDoc).Methods("POST")
+	// api.HandleFunc("/docs/{id:[0-9]+}", app.getDoc).Methods("GET")
+	api.HandleFunc("/docs/{id:[0-9]+}", app.updateDoc).Methods("PUT")
+	api.HandleFunc("/docs/{id:[0-9]+}", app.deleteDoc).Methods("DELETE")
 
 	// serving front-end 
 	app.Router.PathPrefix("/dist/").Handler(http.FileServer(http.Dir(static)))
@@ -367,6 +497,12 @@ func (app *App) Initialize(DATABASE_URL string) {
 	if _, err := app.DB.Exec(uvicJobQuery); err != nil {
 		log.Fatal(err)
 	}
+
+	// co-op table
+	if _, err := app.DB.Exec(docQuery); err != nil {
+		log.Fatal(err)
+	}
+
 	app.Router = mux.NewRouter()
 	app.initializeRoutes()
 }

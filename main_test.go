@@ -26,8 +26,20 @@ searchtime DATE NOT NULL,
 CONSTRAINT jobinfo_pkey PRIMARY KEY (id)
 )`
 
+const tableCreationQuery2 = `CREATE TABLE IF NOT EXISTS docs
+(
+	id SERIAL,
+	public_id TEXT NOT NULL,
+	doc_name TEXT NOT NULL,
+	doc_tag TEXT NOT NULL,
+	CONSTRAINT docs_pkey PRIMARY KEY (id)
+)`
+
 func ensureTableExists() {
 	if _, err := app.DB.Exec(tableCreationQuery); err != nil {
+		log.Fatal(err)
+	}
+	if _, err := app.DB.Exec(tableCreationQuery2); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -122,6 +134,7 @@ func TestAddJob(t *testing.T) {
 	checkResponseCode(t, http.StatusCreated, response.Code)
     
 }
+
 func TestGetJob(t *testing.T) {
     req, _ := http.NewRequest("GET", "/api/jobs/1", nil)
 	response := executeRequest(req)
@@ -133,6 +146,44 @@ func TestGetJob(t *testing.T) {
     fmt.Printf("%v\n", jobposting)
 }
 
+
+
+func TestEmptyTableDoc(t *testing.T) {
+	clearTable()
+	req, _ := http.NewRequest("GET", "/api/docs", nil)
+	response := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, response.Code)
+
+	if body := response.Body.String(); body != "[]" {
+		t.Errorf("Expected an empty array. Got %s", body)
+	}
+}
+
+func TestAddDoc(t *testing.T) {
+	clearTable()
+
+	payload := []byte(`{"public_id": "test_233.pdf", "doc_name": "epic_troll.pdf", "doc_tag": "ECE483"}`)
+	req, _ := http.NewRequest("POST", "/api/docs", bytes.NewBuffer(payload))
+    fmt.Printf("%v\n", req)
+	response := executeRequest(req)
+    fmt.Printf("%v\n", response)
+	checkResponseCode(t, http.StatusCreated, response.Code)
+    
+}
+
+func TestGetDoc(t *testing.T) {
+    req, _ := http.NewRequest("GET", "/api/docs", nil)
+	response := executeRequest(req)
+    fmt.Printf("%v\n", req)
+	checkResponseCode(t, http.StatusOK, response.Code)
+    var docspost map[string]interface{}
+	json.Unmarshal(response.Body.Bytes(), &docspost)
+    fmt.Printf("%v\n", docspost)
+}
+
+
+/** OUTDATED CODE, CLEAN UP LATER */
 func TestEmptyTableUvic(t *testing.T) {
 	clearTable()
 	req, _ := http.NewRequest("GET", "/api/uvic/1", nil)

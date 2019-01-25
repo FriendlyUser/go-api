@@ -31,6 +31,14 @@ type uvicjob struct {
 	Coop         bool    `json:"coop"`
 }
 
+// doc struct
+type docs struct {
+	ID           int     `json:"id"`
+	PublicId     int     `json:"publicid"`
+	DocName      string  `json:"docname"`
+	DocTag       string  `json:"doctag"`
+}
+
 func getAllUvic(db *sql.DB) ([]uvicjob, error) {
 	rows, err := db.Query("SELECT * FROM uvic")
     
@@ -188,3 +196,84 @@ func getJobSearchItems(db *sql.DB, start, count int) ([]jobsearchitem, error) {
 
 	return jobsearchitems, nil
 }
+
+func getAllDocsDB(db *sql.DB) ([]docs, error) {
+	rows, err := db.Query("SELECT * FROM docs")
+    
+    if err != nil {
+		return nil, err
+	}
+
+	// Will execute at the end of the scope
+	defer rows.Close()
+
+	docsItems := []docs{}
+	// https://github.com/golang/go/wiki/CodeReviewComments#declaring-empty-slices
+	// var jobsearchitems []jobsearchitem
+
+	for rows.Next() {
+		var j docs
+
+		if err := rows.Scan(&j.ID, &j.PublicId, &j.DocName,
+			&j.DocTag); err != nil {
+			return nil, err
+		}
+
+		docsItems = append(docsItems, j)
+	}
+
+	return docsItems, nil
+}
+
+func (j *docs) getDocItem(db *sql.DB) error {
+	return db.QueryRow("SELECT id,public_id,doc_name,doc_tag FROM docs WHERE id=$1", 
+		j.ID).Scan(&j.PublicId, &j.DocName, &j.DocTag)
+}
+
+func (j *docs) updateDoc(db *sql.DB) error {
+	_, err := db.Exec("UPDATE docs SET public_id=$1, doc_name=$2, doc_tag=$3 WHERE id=$4", 
+		j.PublicId, j.DocName, j.DocTag, j.ID)
+
+	return err
+}
+
+func (j *docs) deleteDoc(db *sql.DB) error {
+	_, err := db.Exec("DELETE FROM docs WHERE id=$1", j.ID)
+
+	return err
+}
+
+func (j *docs) createDoc(db *sql.DB) error {
+	err := db.QueryRow("INSERT INTO docs(public_id,doc_name,doc_tag) VALUES($1, $2, $3) RETURNING id", j.PublicId, j.DocName, j.DocTag).Scan(&j.ID)
+
+	return err
+}
+
+// implement later
+// func getJobSearchItems(db *sql.DB, start, count int) ([]jobsearchitem, error) {
+// 	rows, err := db.Query("SELECT numjobs, avgkeywords, avgskills,city, searchterm, searchtime FROM jobinfo LIMIT $1 offset $2", count, start)
+
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	// Will execute at the end of the scope
+// 	defer rows.Close()
+
+// 	jobsearchitems := []jobsearchitem{}
+// 	// https://github.com/golang/go/wiki/CodeReviewComments#declaring-empty-slices
+// 	// var jobsearchitems []jobsearchitem
+
+// 	for rows.Next() {
+// 		var j jobsearchitem
+
+// 		if err := rows.Scan(&j.ID, &j.NumJobs, &j.AvgKeywords,
+// 			&j.AvgSkills,&j.City,&j.SearchTerm,&j.SearchTime); err != nil {
+// 			return nil, err
+// 		}
+
+// 		jobsearchitems = append(jobsearchitems, j)
+// 	}
+
+// 	return jobsearchitems, nil
+// }
