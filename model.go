@@ -197,7 +197,7 @@ func getJobSearchItems(db *sql.DB, start, count int) ([]jobsearchitem, error) {
 	return jobsearchitems, nil
 }
 
-func getAllDocs(db *sql.DB) ([]docsItems, error) {
+func getAllDocsDB(db *sql.DB) ([]docsItems, error) {
 	rows, err := db.Query("SELECT * FROM docs")
     
     if err != nil {
@@ -212,39 +212,39 @@ func getAllDocs(db *sql.DB) ([]docsItems, error) {
 	// var jobsearchitems []jobsearchitem
 
 	for rows.Next() {
-		var d doc
+		var j docs
 
-		if err := rows.Scan(&d.ID, &d.PublicId, &j.DocName,
-			&d.DocTag); err != nil {
+		if err := rows.Scan(&j.ID, &j.PublicId, &j.DocName,
+			&j.DocTag); err != nil {
 			return nil, err
 		}
 
-		docsItems = append(docsItems, d)
+		docsItems = append(docsItems, j)
 	}
 
 	return docsItems, nil
 }
 
-func (d *docitem) getDocItem(db *sql.DB) error {
+func (j *docitem) getDocItem(db *sql.DB) error {
 	return db.QueryRow("SELECT id,public_id,doc_name,doc_tag FROM docs WHERE id=$1", 
-		d.ID).Scan(&d.PublicId, &d.DocName, &d.DocTag)
+		j.ID).Scan(&j.PublicId, &j.DocName, &j.DocTag)
 }
 
 func (d *docitem) updateDoc(db *sql.DB) error {
-	_, err := db.Exec("UPDATE docs SET public_id=$1, doc_name=$2, doc_tag=$3 WHERE id=$7", 
-		d.public_id, d.doc_name, d.doc_tag, d.ID)
+	_, err := db.Exec("UPDATE docs SET public_id=$1, doc_name=$2, doc_tag=$3 WHERE id=$4", 
+		j.public_id, j.doc_name, j.doc_tag, j.ID)
 
 	return err
 }
 
-func (d *docitem) deleteDoc(db *sql.DB) error {
-	_, err := db.Exec("DELETE FROM docs WHERE id=$1", d.ID)
+func (j *docitem) deleteDoc(db *sql.DB) error {
+	_, err := db.Exec("DELETE FROM docs WHERE id=$1", j.ID)
 
 	return err
 }
 
-func (d *docitem) createDoc(db *sql.DB) error {
-	err := db.QueryRow("INSERT INTO docs(public_id,doc_name,doc_tag) VALUES($1, $2, $3) RETURNING id", d.PublicId, j.DocName, d.DocTag).Scan(&d.ID)
+func (j *docitem) createDoc(db *sql.DB) error {
+	err := db.QueryRow("INSERT INTO docs(public_id,doc_name,doc_tag) VALUES($1, $2, $3) RETURNING id", j.PublicId, j.DocName, j.DocTag).Scan(&j.ID)
 
 	return err
 }

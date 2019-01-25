@@ -345,7 +345,7 @@ func (app *App) deleteUvic(w http.ResponseWriter, r *http.Request) {
 // get docs first
 func (app *App) getAllDocs(w http.ResponseWriter, r *http.Request) {
 
-	docItems, err := getAllDocItems(app.DB)
+	docItems, err := getAllDocsDB(app.DB)
 
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
@@ -378,7 +378,7 @@ func (app *App) getDocs(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) createDoc(w http.ResponseWriter, r *http.Request) {
-	var d docs
+	var j docs
 	decoder := json.NewDecoder(r.Body)
     fmt.Printf("%v\n", r.Body)
 	if err := decoder.Decode(&j); err != nil {
@@ -389,7 +389,7 @@ func (app *App) createDoc(w http.ResponseWriter, r *http.Request) {
 	// defer : will be executed when the scope ends
 	defer r.Body.Close()
 
-	if err := d.createDoc(app.DB); err != nil {
+	if err := j.createDoc(app.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -407,18 +407,18 @@ func (app *App) updateDoc(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var d docs
+	var j docs
 	decoder := json.NewDecoder(r.Body)
 
-	if err := decoder.Decode(&d); err != nil {
+	if err := decoder.Decode(&j); err != nil {
 		respondWithError(w, http.StatusBadGateway, "Invalid request payload")
 		return
 	}
 
 	defer r.Body.Close()
-	d.ID = id
+	j.ID = id
 
-	if err := d.updateJobSearchItem(app.DB); err != nil {
+	if err := j.updateJobSearchItem(app.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -436,8 +436,8 @@ func (app *App) deleteDoc(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	d := docs{ID: id}
-	if err := j.deleteJobSearchItem(app.DB); err != nil {
+	j := docs{ID: id}
+	if err := j.deleteDoc(app.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -470,7 +470,7 @@ func (app *App) initializeRoutes() {
 	api.HandleFunc("/docs", app.getAllDocs).Methods("GET")
 	api.HandleFunc("/docs/{start:[0-9]+}/{count:[0-9]+}", app.getDocs).Methods("GET")
 	api.HandleFunc("/docs", app.createDoc).Methods("POST")
-	api.HandleFunc("/docs/{id:[0-9]+}", app.getDoc).Methods("GET")
+	// api.HandleFunc("/docs/{id:[0-9]+}", app.getDoc).Methods("GET")
 	api.HandleFunc("/docs/{id:[0-9]+}", app.updateDoc).Methods("PUT")
 	api.HandleFunc("/docs/{id:[0-9]+}", app.deleteDoc).Methods("DELETE")
 
