@@ -356,16 +356,16 @@ func (app *App) getAllDocs(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) getDocs(w http.ResponseWriter, r *http.Request) {
-	count, _ := strconv.Atoi(r.FormValue("count"))
-	start, _ := strconv.Atoi(r.FormValue("start"))
+	// count, _ := strconv.Atoi(r.FormValue("count"))
+	// start, _ := strconv.Atoi(r.FormValue("start"))
 
 	//if count < 1 || count > 10 {
 	//	count = 10
 	//}
 
-	if start < 0 {
-		start = 0
-	}
+	// if start < 0 {
+	//	start = 0
+	// }
 
 	// docItems, err := getDocItem(app.DB, start, count)
 
