@@ -162,17 +162,8 @@ func TestEmptyTableDoc(t *testing.T) {
 
 func TestAddDoc(t *testing.T) {
 	clearTable()
- 
-	numJobs := 69
-	avgKeywords := 69.22
-	avgSkills := 79.22
-	searchCity := "TechToria"
-	searchTerm := "Blockchain"
-	searchTime := "2001-09-28"
-	//productPrice := 45.67
-	payload := []byte(`{"numjobs": ` + fmt.Sprintf("%d", numJobs) + `, "avgkeywords": ` + fmt.Sprintf("%.2f", avgKeywords) + `, "avgskills": ` + fmt.Sprintf("%.2f", avgSkills) + `, "city": "` + searchCity + `", "searchterm": "` + searchTerm  + `", "searchtime": "` +  searchTime + `"}`)
 
-	public_id = "test_8982.pdf"
+	public_id := "test_8982.pdf"
 	doc_name := "epic_troll.pdf"
 	doc_tag := "ECE483"
 	payload := []byte(`{"public_id": ` + public_id + `", "doc_name": "` + doc_name  + `", "doc_tag": "` +  doc_tag + `"}`)
