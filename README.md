@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/FriendlyUser/go-api.svg?branch=master)](https://travis-ci.org/FriendlyUser/go-api)
+[![Documentation](https://godoc.org/github.com/FriendlyUser/go-api?status.svg)](https://godoc.org/github.com/FriendlyUser/go-api)
 # go-api 
 Simple Go REST API with postresql db + Vue.js frontend
 
